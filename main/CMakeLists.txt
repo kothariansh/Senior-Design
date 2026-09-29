@@ -3,8 +3,8 @@ idf_component_register(
     INCLUDE_DIRS "."
     REQUIRES esp_driver_dac esp_driver_uart
     EMBED_FILES
-        "ka_ching.raw"
-        "error.raw"
-        "dice.raw"
-        "build.raw"
+        "sounds/ka_ching.raw"
+        "sounds/error.raw"
+        "sounds/dice.raw"
+        "sounds/build.raw"
 )
