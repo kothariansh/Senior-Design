@@ -1,98 +1,60 @@
-#include <stdio.h>
-#include <stdint.h>
+/*
+ * SPDX-FileCopyrightText: 2023-2024 Espressif Systems (Shanghai) CO LTD
+ *
+ * SPDX-License-Identifier: CC0-1.0
+ */
 
-#include "driver/dac_continuous.h"
-#include "driver/uart.h"
+#include <assert.h>
 
-#include "audio.c"
+#include "esp_log.h"
+#include "esp_lv_adapter.h"
+#include "lvgl.h"
+#include "waveshare_rgb_lcd_port.h"
 
-#define SAMPLE_RATE 44100
-#define UART_PORT UART_NUM_0
-
-extern const uint8_t ka_ching_start[]
-    asm("_binary_ka_ching_raw_start");
-extern const uint8_t ka_ching_end[]
-    asm("_binary_ka_ching_raw_end");
-
-extern const uint8_t error_start[]
-    asm("_binary_error_raw_start");
-extern const uint8_t error_end[]
-    asm("_binary_error_raw_end");
-
-extern const uint8_t dice_start[]
-    asm("_binary_dice_raw_start");
-extern const uint8_t dice_end[]
-    asm("_binary_dice_raw_end");
-
-extern const uint8_t build_start[]
-    asm("_binary_build_raw_start");
-extern const uint8_t build_end[]
-    asm("_binary_build_raw_end");
-
-void audio_init(void);
-void play_sound(const uint8_t *start, const uint8_t *end);
-
+static const char *TAG = "lvgl9_demo";
+void catan_ui_init(void);
 void app_main(void)
 {
-    audio_init();
+    const esp_lv_adapter_rotation_t rotation = ESP_LV_ADAPTER_ROTATE_0;
+    const esp_lv_adapter_tear_avoid_mode_t tear_mode = ESP_LV_ADAPTER_TEAR_AVOID_MODE_DEFAULT_RGB;
 
-    ESP_ERROR_CHECK(
-        uart_driver_install(
-            UART_NUM_0,
-            256,
-            0,
-            0,
-            NULL,
-            0
-        )
-    );
+    esp_lcd_panel_handle_t panel_handle = NULL;
+    esp_lcd_touch_handle_t touch_handle = NULL;
 
-    printf("\nCatan Sound Test\n");
-    printf("1 = Ka-ching\n");
-    printf("2 = Error\n");
-    printf("3 = Dice\n");
-    printf("4 = Build\n");
+    ESP_ERROR_CHECK(waveshare_esp32_s3_rgb_lcd_init(
+        tear_mode,
+        rotation,
+        &panel_handle,
+        &touch_handle));
+    ESP_ERROR_CHECK(waveshare_rgb_lcd_backlight_on());
 
-    uint8_t c;
+    esp_lv_adapter_config_t adapter_config = ESP_LV_ADAPTER_DEFAULT_CONFIG();
+    adapter_config.task_stack_size = 12 * 1024;
+    adapter_config.stack_in_psram = true;
+    ESP_ERROR_CHECK(esp_lv_adapter_init(&adapter_config));
 
-    while (1)
-    {
-        int len = uart_read_bytes(
-            UART_PORT,
-            &c,
-            1,
-            pdMS_TO_TICKS(100)
-        );
+    esp_lv_adapter_display_config_t disp_config = ESP_LV_ADAPTER_DISPLAY_RGB_DEFAULT_CONFIG(
+        panel_handle,
+        NULL,
+        EXAMPLE_LCD_H_RES,
+        EXAMPLE_LCD_V_RES,
+        rotation);
+    disp_config.profile.use_psram = true;
 
-        if (len > 0)
-        {
-            switch (c)
-            {
-                case '1':
-                    printf("Playing ka-ching\n");
-                    play_sound(ka_ching_start, ka_ching_end);
-                    break;
+    lv_display_t *disp = esp_lv_adapter_register_display(&disp_config);
+    assert(disp != NULL);
 
-                case '2':
-                    printf("Playing error\n");
-                    play_sound(error_start, error_end);
-                    break;
+    if (touch_handle != NULL) {
+        esp_lv_adapter_touch_config_t touch_config = ESP_LV_ADAPTER_TOUCH_DEFAULT_CONFIG(disp, touch_handle);
+        lv_indev_t *touch = esp_lv_adapter_register_touch(&touch_config);
+        assert(touch != NULL);
+    }
 
-                case '3':
-                    printf("Playing dice\n");
-                    play_sound(dice_start, dice_end);
-                    break;
+    ESP_ERROR_CHECK(esp_lv_adapter_start());
 
-                case '4':
-                    printf("Playing build\n");
-                    play_sound(build_start, build_end);
-                    break;
-
-                default:
-                    break;
-            }
-        }
-
-        vTaskDelay(pdMS_TO_TICKS(10));
+    ESP_LOGI(TAG, "Starting CATAN welcome screen");
+    if (esp_lv_adapter_lock(-1) == ESP_OK) {
+        catan_ui_init();
+        esp_lv_adapter_unlock();
     }
 }
