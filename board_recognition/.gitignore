@@ -1,0 +1,14 @@
+# Local API credentials - NEVER commit
+.env
+.env.local
+.env.*.local
+
+# Python
+__pycache__/
+*.pyc
+
+# macOS
+.DS_Store
+
+# Locally generated output
+board_setup_gemini.json
