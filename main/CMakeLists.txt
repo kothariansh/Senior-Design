@@ -2,10 +2,12 @@ idf_component_register(
     SRCS
         "main.c"
         "catan_ui.cpp"
+        "uart_link.c"
         "../components/waveshare_rgb_lcd_port.c"
     INCLUDE_DIRS
         "."
-        "../components")
+        "../components"
+    REQUIRES esp_driver_uart)
 
 idf_build_get_property(build_components BUILD_COMPONENTS)
 if("lvgl" IN_LIST build_components)
