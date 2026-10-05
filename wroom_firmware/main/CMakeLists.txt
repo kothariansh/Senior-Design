@@ -3,12 +3,14 @@ idf_component_register(
         "main.c"
         "audio.c"
         "nfc.c"
+        "uart_link.c"
 
     INCLUDE_DIRS
         "."
 
     REQUIRES
         esp_driver_dac
+        esp_driver_uart
         pn532
 
     EMBED_FILES

@@ -1,5 +1,6 @@
 #include <lvgl.h>
 #include <cstdio>
+#include "uart_link.h"
 
 namespace {
 
@@ -16,6 +17,8 @@ SetupStage stage = SetupStage::Welcome;
 
 lv_obj_t* welcomeScreen = nullptr;
 lv_obj_t* boardScreen = nullptr;
+lv_obj_t* uartStatusLabel = nullptr;
+lv_obj_t* boardStatusLabel = nullptr;
 
 // Uses a larger font if it is enabled in lv_conf.h.
 const lv_font_t* headingFont()
@@ -66,6 +69,7 @@ void startClicked(lv_event_t*)
         return;
     }
 
+    uart_link_send("ACTION:START\n");
     stage = SetupStage::BoardSelection;
     lv_screen_load(boardScreen);
     std::puts("START: entering board selection.");
@@ -73,6 +77,7 @@ void startClicked(lv_event_t*)
 
 void backClicked(lv_event_t*)
 {
+    uart_link_send("ACTION:BACK\n");
     stage = SetupStage::Welcome;
     lv_screen_load(welcomeScreen);
     std::puts("BACK: returning to welcome.");
@@ -126,6 +131,13 @@ extern "C" void catan_ui_init(void)
     addLabel(welcomeScreen, "Welcome to game night.", 195, CREAM);
     addLabel(welcomeScreen, "Build. Trade. Settle.", 235, CREAM);
 
+    uartStatusLabel = addLabel(
+        welcomeScreen,
+        "WROOM: waiting...",
+        270,
+        CREAM
+    );
+
     addButton(welcomeScreen, "START GAME", 300, startClicked);
 
     addLabel(
@@ -154,7 +166,17 @@ extern "C" void catan_ui_init(void)
         250,
         CREAM);
 
+    boardStatusLabel = addLabel(boardScreen, "WROOM: waiting...", 285, CREAM);
+
     addButton(boardScreen, "BACK", 320, backClicked);
 
     lv_screen_load(welcomeScreen);
+}
+
+extern "C" void catan_ui_set_status(const char *text)
+{
+    if (uartStatusLabel != nullptr && text != nullptr) {
+        lv_label_set_text(uartStatusLabel, text);
+        lv_label_set_text(boardStatusLabel, text);
+    }
 }
