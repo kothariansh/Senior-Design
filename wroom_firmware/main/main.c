@@ -3,15 +3,16 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdatomic.h>
-#include "uart_link.h"
 
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
 #include "esp_log.h"
 
+#include "uart_link.h"
 #include "audio.h"
 #include "nfc.h"
+#include "sd_card.h"
 
 static const char *TAG = "CATAN_WROOM";
 
@@ -86,6 +87,15 @@ void app_main(void)
     /*
      * WROOM owns the primary hardware/backend peripherals.
      */
+    // if (sd_init() != ESP_OK) {
+    //     printf("SD card initialization failed\n");
+    //     return;
+    // }
+
+    // load_saved_game();
+    // xTaskCreate(autosave_task, "autosave_task", 4096, NULL, 5, NULL);
+    // printf("CATAN system started\n");
+
     audio_init();
 
     if (!nfc_init()) {

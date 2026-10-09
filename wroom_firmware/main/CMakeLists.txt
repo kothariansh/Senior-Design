@@ -4,6 +4,7 @@ idf_component_register(
         "audio.c"
         "nfc.c"
         "uart_link.c"
+        "sd_card.c"
 
     INCLUDE_DIRS
         "."
@@ -11,6 +12,10 @@ idf_component_register(
     REQUIRES
         esp_driver_dac
         esp_driver_uart
+        esp_driver_spi
+        esp_timer
+        fatfs
+        sdmmc
         pn532
 
     EMBED_FILES
