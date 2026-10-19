@@ -1,6 +1,8 @@
 #include <lvgl.h>
 #include <cstdio>
 #include "uart_link.h"
+// TEMPORARY: Disable UART transmissions during UI A/B testing.
+#define uart_link_send(message) ((void)0)
 
 namespace {
 

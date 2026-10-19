@@ -118,7 +118,13 @@ void app_main(void)
 
     while (1)
     {
-        if (nfc_read_uid(uid, &uid_length, 500))
+        // debuging the sound Oct08:
+        ESP_LOGI(TAG, "NFC_DEBUG: scan starting");
+        bool card_found = nfc_read_uid(uid, &uid_length, 500);
+        ESP_LOGI(TAG, "NFC_DEBUG: scan returned %d", card_found);
+
+        if (card_found)
+        // if (nfc_read_uid(uid, &uid_length, 500))
         {
             printf("UID: ");
 
