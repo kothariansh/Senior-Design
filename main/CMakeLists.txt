@@ -7,7 +7,7 @@ idf_component_register(
     INCLUDE_DIRS
         "."
         "../components"
-    REQUIRES esp_driver_uart esp_driver_i2c)
+    REQUIRES esp_driver_uart esp_driver_i2c esp_timer)
 
 idf_build_get_property(build_components BUILD_COMPONENTS)
 if("lvgl" IN_LIST build_components)

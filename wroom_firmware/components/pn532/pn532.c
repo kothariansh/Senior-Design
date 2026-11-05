@@ -11,6 +11,7 @@
 
 #include <esp_log.h>
 #include <esp_log_buffer.h> // New ESP-IDF logging header
+#include "esp_idf_version.h"
 
 #include "driver/gpio.h"
 #include "pn532.h"
@@ -30,7 +31,10 @@
 #define MIFARE_DEBUG(fmt, ...)
 #endif
 
-#define PN532_PACKBUFFSIZ 64
+#define PN532_I2C_TRANSFER_TIMEOUT_MS 100
+#define PN532_I2C_POLL_MS 10
+
+static const char *TAG = "PN532";
 
 #ifndef _BV
 #define _BV(bit) (1 << (bit))
@@ -52,8 +56,167 @@ static bool pn532_waitready(pn532_t *obj, uint16_t timeout);
 static void pn532_spi_write(pn532_t *obj, uint8_t c);
 static uint8_t pn532_spi_read(pn532_t *obj);
 
+esp_err_t pn532_i2c_init(pn532_t *obj, uint8_t sda, uint8_t scl)
+{
+    if (obj == NULL) {
+        return ESP_ERR_INVALID_ARG;
+    }
+    memset(obj, 0, sizeof(*obj));
+    obj->_use_i2c = true;
+
+    const i2c_master_bus_config_t bus_config = {
+        .i2c_port = -1,
+        .sda_io_num = sda,
+        .scl_io_num = scl,
+        .clk_source = I2C_CLK_SRC_DEFAULT,
+        .glitch_ignore_cnt = 7,
+        .flags.enable_internal_pullup = true,
+    };
+    esp_err_t err = i2c_new_master_bus(&bus_config, &obj->_i2c_bus);
+    if (err != ESP_OK) {
+        return err;
+    }
+    const i2c_device_config_t device_config = {
+        .dev_addr_length = I2C_ADDR_BIT_LEN_7,
+        .device_address = PN532_I2C_ADDRESS,
+        .scl_speed_hz = 100000,
+        .scl_wait_us = 10000,
+    };
+    err = i2c_master_bus_add_device(obj->_i2c_bus, &device_config, &obj->_i2c_dev);
+    if (err != ESP_OK) {
+        i2c_del_master_bus(obj->_i2c_bus);
+        obj->_i2c_bus = NULL;
+    }
+    return err;
+}
+
+/* NXP UM0701-02, sections 6.2.1 and 6.2.4:
+ * https://www.nxp.com/docs/en/user-guide/141520.pdf
+ * Read status AND the complete frame in one transaction. A STOP after a
+ * ready status/header loses the unread bytes. Bytes following BUSY are ignored.
+ * Read up to our existing packet capacity; LEN identifies the actual response.
+ */
+static bool pn532_i2c_retryable(esp_err_t err)
+{
+    // IDF 5.5 reports a synchronous NACK as INVALID_STATE; 6.x uses
+    // INVALID_RESPONSE. Both paths are bounded by the caller's timeout/retries.
+#if ESP_IDF_VERSION < ESP_IDF_VERSION_VAL(6, 0, 0)
+    if (err == ESP_ERR_INVALID_STATE) {
+        return true;
+    }
+#endif
+    return err == ESP_ERR_INVALID_RESPONSE;
+}
+
+static bool pn532_i2c_read_frame(pn532_t *obj, uint8_t *frame, size_t capacity,
+                                uint16_t timeout)
+{
+    uint8_t wire[PN532_PACKBUFFSIZ + 1];
+    TickType_t limit = pdMS_TO_TICKS(timeout ? timeout : 1000);
+    if (limit == 0) {
+        limit = 1;
+    }
+    const TickType_t start = xTaskGetTickCount();
+    for (;;) {
+        const TickType_t elapsed = xTaskGetTickCount() - start;
+        if (elapsed >= limit) {
+            return false;
+        }
+        uint32_t remaining_ms = (limit - elapsed) * portTICK_PERIOD_MS;
+        int transfer_ms = remaining_ms < PN532_I2C_TRANSFER_TIMEOUT_MS
+                              ? remaining_ms : PN532_I2C_TRANSFER_TIMEOUT_MS;
+        esp_err_t err = i2c_master_receive(obj->_i2c_dev, wire, capacity + 1, transfer_ms);
+        if (err == ESP_OK) {
+            if (wire[0] & PN532_I2C_READY) {
+                memcpy(frame, wire + 1, capacity);
+                return true;
+            }
+        } else if (!pn532_i2c_retryable(err)) {
+            ESP_LOGW(TAG, "I2C read failed: %s", esp_err_to_name(err));
+            return false;
+        }
+        // The PN532 can briefly NACK its address between exchanges (6.2.4).
+        vTaskDelay(pdMS_TO_TICKS(PN532_I2C_POLL_MS) + 1);
+    }
+}
+
+static bool pn532_i2c_exchange(pn532_t *obj, const uint8_t *cmd, uint8_t cmdlen,
+                              uint16_t timeout)
+{
+    obj->_i2c_response_len = 0;
+    if (obj->_i2c_dev == NULL || cmd == NULL || cmdlen == 0 || cmdlen > PN532_PACKBUFFSIZ) {
+        return false;
+    }
+    uint8_t frame[PN532_PACKBUFFSIZ + 8] = {0x00, 0x00, 0xFF};
+    frame[3] = cmdlen + 1;
+    frame[4] = (uint8_t)(0 - frame[3]);
+    frame[5] = PN532_HOSTTOPN532;
+    memcpy(frame + 6, cmd, cmdlen);
+    uint8_t checksum = PN532_HOSTTOPN532;
+    for (uint8_t i = 0; i < cmdlen; ++i) {
+        checksum += cmd[i];
+    }
+    frame[6 + cmdlen] = (uint8_t)(0 - checksum);
+    frame[7 + cmdlen] = PN532_POSTAMBLE;
+    esp_err_t err;
+    for (unsigned attempt = 0; attempt < 3; ++attempt) {
+        err = i2c_master_transmit(obj->_i2c_dev, frame, cmdlen + 8,
+                                  PN532_I2C_TRANSFER_TIMEOUT_MS);
+        if (!pn532_i2c_retryable(err)) {
+            break;
+        }
+        PN532_DELAY(10);
+    }
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "I2C command 0x%02X failed: %s", cmd[0], esp_err_to_name(err));
+        return false;
+    }
+
+    uint8_t ack[sizeof(pn532ack)];
+    if (!pn532_i2c_read_frame(obj, ack, sizeof(ack), timeout)) {
+        goto failed;
+    }
+    if (memcmp(ack, pn532ack, sizeof(ack)) != 0) {
+        ESP_LOGW(TAG, "Invalid PN532 ACK frame");
+        goto failed;
+    }
+    uint8_t *response = obj->_i2c_response;
+    if (!pn532_i2c_read_frame(obj, response, sizeof(obj->_i2c_response), timeout)) {
+        goto failed;
+    }
+    const size_t length = response[3];
+    if (response[0] != 0 || response[1] != 0 || response[2] != 0xFF ||
+        length < 2 || length + 7 > sizeof(obj->_i2c_response) ||
+        (uint8_t)(length + response[4]) != 0 ||
+        response[5] != PN532_PN532TOHOST || response[6] != (uint8_t)(cmd[0] + 1)) {
+        ESP_LOGW(TAG, "Invalid PN532 response header/length for 0x%02X", cmd[0]);
+        goto failed;
+    }
+    checksum = 0;
+    for (size_t i = 5; i <= length + 5; ++i) {
+        checksum += response[i];
+    }
+    if (checksum != 0 || response[length + 6] != PN532_POSTAMBLE) {
+        ESP_LOGW(TAG, "Invalid PN532 response checksum/postamble");
+        goto failed;
+    }
+    obj->_i2c_response_len = length + 7;
+    return true;
+
+failed:
+    // Abort a pending scan on timeout (UM0701-02 section 6.2.2.2).
+    // This also discards a late response before the next scan; no IRQ is needed.
+    err = i2c_master_transmit(obj->_i2c_dev, pn532ack, sizeof(pn532ack),
+                              PN532_I2C_TRANSFER_TIMEOUT_MS);
+    if (err != ESP_OK) {
+        ESP_LOGW(TAG, "I2C abort failed: %s", esp_err_to_name(err));
+    }
+    return false;
+}
+
 void pn532_spi_init(pn532_t *obj, uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss)
 {
+    memset(obj, 0, sizeof(*obj));
     obj->_clk = clk;
     obj->_miso = miso;
     obj->_mosi = mosi;
@@ -79,6 +242,11 @@ void pn532_spi_init(pn532_t *obj, uint8_t clk, uint8_t miso, uint8_t mosi, uint8
 /**************************************************************************/
 void pn532_begin(pn532_t *obj)
 {
+    if (obj->_use_i2c) {
+        // Allow power-up; the SPI synchronization command/CS pin is not used.
+        PN532_DELAY(1000);
+        return;
+    }
     gpio_set_level(obj->_ss, 0);
 
     PN532_DELAY(1000);
@@ -112,14 +280,18 @@ uint32_t pn532_getFirmwareVersion(pn532_t *obj)
     // read data packet
     pn532_readdata(obj, pn532_packetbuffer, 12);
 
-    // check some basic stuff
-    if (0 != strncmp((char *)pn532_packetbuffer, (char *)pn532response_firmwarevers, 6))
+    // I2C retains the complete preamble; keep the legacy SPI response layout.
+    const uint8_t offset_adjust = obj->_use_i2c ? 1 : 0;
+    if (obj->_use_i2c ?
+        (obj->_i2c_response_len != 13 ||
+         memcmp(pn532_packetbuffer + offset_adjust, pn532response_firmwarevers, 6) != 0) :
+        strncmp((char *)pn532_packetbuffer, (char *)pn532response_firmwarevers, 6) != 0)
     {
         PN532_DEBUG("Firmware doesn't match!\n");
         return 0;
     }
 
-    int offset = 6;
+    int offset = 6 + offset_adjust;
     response = pn532_packetbuffer[offset++];
     response <<= 8;
     response |= pn532_packetbuffer[offset++];
@@ -146,6 +318,9 @@ uint32_t pn532_getFirmwareVersion(pn532_t *obj)
 // default timeout of one second
 bool pn532_sendCommandCheckAck(pn532_t *obj, uint8_t *cmd, uint8_t cmdlen, uint16_t timeout)
 {
+    if (obj->_use_i2c) {
+        return pn532_i2c_exchange(obj, cmd, cmdlen, timeout);
+    }
     // write the command
     pn532_writecommand(obj, cmd, cmdlen);
 
@@ -162,8 +337,7 @@ bool pn532_sendCommandCheckAck(pn532_t *obj, uint8_t *cmd, uint8_t cmdlen, uint1
         return false;
     }
 
-    // For SPI only wait for the chip to be ready again.
-    // This is unnecessary with I2C.
+    // The I2C exchange above already received and validated the response.
     if (!pn532_waitready(obj, timeout))
     {
         return false;
@@ -220,7 +394,7 @@ bool pn532_writeGPIO(pn532_t *obj, uint8_t pinstate)
     }
     PN532_DEBUG("\n");
 
-    int offset = 5;
+    int offset = obj->_use_i2c ? 6 : 5;
     return (pn532_packetbuffer[offset] == 0x0F);
 }
 
@@ -259,7 +433,7 @@ uint8_t pn532_readGPIO(pn532_t *obj)
     b8              Interface Mode Pins (not used ... bus select pins)
     b9..10          checksum */
 
-    int p3offset = 6;
+    int p3offset = obj->_use_i2c ? 7 : 6;
 
     PN532_DEBUG("Received:");
     for (int i = 0; i < 11; i++)
@@ -298,7 +472,7 @@ bool pn532_SAMConfig(pn532_t *obj)
     pn532_packetbuffer[0] = PN532_COMMAND_SAMCONFIGURATION;
     pn532_packetbuffer[1] = 0x01; // normal mode;
     pn532_packetbuffer[2] = 0x14; // timeout 50ms * 20 = 1 second
-    pn532_packetbuffer[3] = 0x01; // use IRQ pin!
+    pn532_packetbuffer[3] = obj->_use_i2c ? 0x00 : 0x01; // I2C polls status, no IRQ wire
 
     if (!pn532_sendCommandCheckAck(obj, pn532_packetbuffer, 4, 1000))
         return false;
@@ -306,7 +480,7 @@ bool pn532_SAMConfig(pn532_t *obj)
     // read data packet
     pn532_readdata(obj, pn532_packetbuffer, 8);
 
-    int offset = 5;
+    int offset = obj->_use_i2c ? 6 : 5;
     return (pn532_packetbuffer[offset] == 0x15);
 }
 
@@ -353,6 +527,10 @@ bool pn532_setPassiveActivationRetries(pn532_t *obj, uint8_t maxRetries)
 /**************************************************************************/
 bool pn532_readPassiveTargetID(pn532_t *obj, uint8_t cardbaudrate, uint8_t *uid, uint8_t *uidLength, uint16_t timeout)
 {
+    if (uid == NULL || uidLength == NULL) {
+        return false;
+    }
+    *uidLength = 0;
     pn532_packetbuffer[0] = PN532_COMMAND_INLISTPASSIVETARGET;
     pn532_packetbuffer[1] = 1; // max 1 cards at once (we can set this to 2 later)
     pn532_packetbuffer[2] = cardbaudrate;
@@ -382,6 +560,12 @@ bool pn532_readPassiveTargetID(pn532_t *obj, uint8_t cardbaudrate, uint8_t *uid,
     PN532_DEBUG("Found %d tags\n", pn532_packetbuffer[7]);
     if (pn532_packetbuffer[7] != 1)
         return 0;
+
+    const uint8_t length = pn532_packetbuffer[12];
+    if ((length != 4 && length != 7) ||
+        (obj->_use_i2c && (pn532_packetbuffer[3] < 8 + length))) {
+        return false;
+    }
 
     uint16_t sens_res = pn532_packetbuffer[9];
     sens_res <<= 8;
@@ -1262,6 +1446,9 @@ bool pn532_readack(pn532_t *obj)
 /**************************************************************************/
 bool pn532_isready(pn532_t *obj)
 {
+    if (obj->_use_i2c) {
+        return obj->_i2c_response_len != 0;
+    }
     gpio_set_level(obj->_ss, 0);
     PN532_DELAY(10);
     pn532_spi_write(obj, PN532_SPI_STATREAD);
@@ -1283,6 +1470,9 @@ bool pn532_isready(pn532_t *obj)
 /**************************************************************************/
 bool pn532_waitready(pn532_t *obj, uint16_t timeout)
 {
+    if (obj->_use_i2c) {
+        return pn532_isready(obj);
+    }
     uint16_t timer = 0;
     while (!pn532_isready(obj))
     {
@@ -1310,6 +1500,14 @@ bool pn532_waitready(pn532_t *obj, uint16_t timeout)
 /**************************************************************************/
 void pn532_readdata(pn532_t *obj, uint8_t *buff, uint8_t n)
 {
+    if (obj->_use_i2c) {
+        // The complete frame was consumed during sendCommandCheckAck so no
+        // second I2C read can drop its preamble or return a different frame.
+        memset(buff, 0, n);
+        size_t length = n < obj->_i2c_response_len ? n : obj->_i2c_response_len;
+        memcpy(buff, obj->_i2c_response, length);
+        return;
+    }
     gpio_set_level(obj->_ss, 0);
     PN532_DELAY(10);
     pn532_spi_write(obj, PN532_SPI_DATAREAD);

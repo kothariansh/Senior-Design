@@ -12,12 +12,18 @@
 #include "uart_link.h"
 
 #include "esp_log.h"
+#include "esp_timer.h"
+#include "esp_system.h"
 #include "esp_lv_adapter.h"
 #include "lvgl.h"
 #include "waveshare_rgb_lcd_port.h"
 
 static const char *TAG = "lvgl9_demo";
 void catan_ui_init(void);
+static uint32_t lvgl_tick_from_esp_timer(void)
+{
+    return (uint32_t)(esp_timer_get_time() / 1000);
+}
 void catan_ui_set_status(const char *text);
 
 static void uart_receive_task(void *arg)
@@ -53,6 +59,7 @@ static void uart_receive_task(void *arg)
 
 void app_main(void)
 {
+    ESP_LOGI(TAG, "Reset reason: %d", esp_reset_reason());
     uart_link_init();
     const esp_lv_adapter_rotation_t rotation = ESP_LV_ADAPTER_ROTATE_0;
     const esp_lv_adapter_tear_avoid_mode_t tear_mode = ESP_LV_ADAPTER_TEAR_AVOID_MODE_DEFAULT_RGB;
@@ -89,6 +96,7 @@ void app_main(void)
         assert(touch != NULL);
     }
 
+    lv_tick_set_cb(lvgl_tick_from_esp_timer);
     ESP_ERROR_CHECK(esp_lv_adapter_start());
 
     ESP_LOGI(TAG, "Starting CATAN welcome screen");

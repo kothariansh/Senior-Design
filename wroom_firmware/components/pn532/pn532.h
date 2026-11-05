@@ -2,6 +2,10 @@
 #ifndef __PN532_H__
 #define __PN532_H__
 
+#include <stdbool.h>
+#include <stdint.h>
+#include "driver/i2c_master.h"
+
 #ifdef __cplusplus
 extern "C"
 {
@@ -59,7 +63,7 @@ extern "C"
 #define PN532_SPI_DATAREAD (0x03)
 #define PN532_SPI_READY (0x01)
 
-#define PN532_I2C_ADDRESS (0x48 >> 1)
+#define PN532_I2C_ADDRESS (0x24) // 7-bit address; wire addresses are 0x48/0x49
 #define PN532_I2C_READBIT (0x01)
 #define PN532_I2C_BUSY (0x00)
 #define PN532_I2C_READY (0x01)
@@ -124,8 +128,16 @@ extern "C"
 #define PN532_GPIO_P34 (4)
 #define PN532_GPIO_P35 (5)
 
+#define PN532_PACKBUFFSIZ 64
+
     typedef struct
     {
+        bool _use_i2c;
+        i2c_master_bus_handle_t _i2c_bus;
+        i2c_master_dev_handle_t _i2c_dev;
+        uint8_t _i2c_response[PN532_PACKBUFFSIZ];
+        uint8_t _i2c_response_len;
+
         uint8_t _clk;
         uint8_t _miso;
         uint8_t _mosi;
@@ -139,6 +151,7 @@ extern "C"
     } pn532_t;
 
     void pn532_spi_init(pn532_t *obj, uint8_t clk, uint8_t miso, uint8_t mosi, uint8_t ss);
+    esp_err_t pn532_i2c_init(pn532_t *obj, uint8_t sda, uint8_t scl);
     void pn532_begin(pn532_t *obj);
     uint32_t pn532_getFirmwareVersion(pn532_t *obj);
     bool pn532_sendCommandCheckAck(pn532_t *obj, uint8_t *cmd, uint8_t cmdlen, uint16_t timeout);
