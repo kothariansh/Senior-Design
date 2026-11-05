@@ -9,6 +9,8 @@
 #include "driver/spi_common.h"
 #include "esp_log.h"
 #include "esp_vfs_fat.h"
+#include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "sdmmc_cmd.h"
 
 #define SD_MISO_GPIO 19
@@ -23,6 +25,18 @@ static const char *TAG = "CATAN_SD";
 static sdmmc_card_t *card;
 static bool mounted;
 static bool verified;
+static bool bus_initialized;
+static StaticSemaphore_t sd_mutex_storage;
+static SemaphoreHandle_t sd_mutex;
+
+esp_err_t sd_prepare(void)
+{
+    // Called once from app_main before any task uses SD storage.
+    if (sd_mutex == NULL) {
+        sd_mutex = xSemaphoreCreateMutexStatic(&sd_mutex_storage);
+    }
+    return sd_mutex != NULL ? ESP_OK : ESP_ERR_NO_MEM;
+}
 
 typedef struct {
     uint32_t magic;
@@ -63,10 +77,16 @@ static esp_err_t file_path(const char *name, char path[64])
 
 bool sd_is_ready(void)
 {
-    return mounted && verified;
+    if (sd_mutex == NULL) {
+        return false;
+    }
+    xSemaphoreTake(sd_mutex, portMAX_DELAY);
+    bool ready = mounted && verified;
+    xSemaphoreGive(sd_mutex);
+    return ready;
 }
 
-esp_err_t sd_init(void)
+static esp_err_t sd_init_unlocked(void)
 {
     if (mounted) {
         return ESP_OK;
@@ -82,10 +102,14 @@ esp_err_t sd_init(void)
     };
     ESP_LOGI(TAG, "SPI2 CLK GPIO%d, DI GPIO%d, DO GPIO%d, CS GPIO%d",
              SD_CLK_GPIO, SD_MOSI_GPIO, SD_MISO_GPIO, SD_CS_GPIO);
-    esp_err_t err = spi_bus_initialize(SPI2_HOST, &bus_config, SPI_DMA_CH_AUTO);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "SPI bus initialization failed: %s", esp_err_to_name(err));
-        return err;
+    esp_err_t err = ESP_OK;
+    if (!bus_initialized) {
+        err = spi_bus_initialize(SPI2_HOST, &bus_config, SPI_DMA_CH_AUTO);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "SPI bus initialization failed: %s", esp_err_to_name(err));
+            return err;
+        }
+        bus_initialized = true;
     }
 
     sdmmc_host_t host = SDSPI_HOST_DEFAULT();
@@ -104,7 +128,9 @@ esp_err_t sd_init(void)
         ESP_LOGE(TAG, "SD mount failed: %s", esp_err_to_name(err));
         card = NULL;
         esp_err_t cleanup = spi_bus_free(SPI2_HOST);
-        if (cleanup != ESP_OK) {
+        if (cleanup == ESP_OK) {
+            bus_initialized = false;
+        } else {
             ESP_LOGW(TAG, "SPI bus cleanup failed: %s", esp_err_to_name(cleanup));
         }
         return err;
@@ -115,7 +141,41 @@ esp_err_t sd_init(void)
     return ESP_OK;
 }
 
-esp_err_t sd_write_file(const char *name, const void *data, size_t length)
+static esp_err_t sd_check_media_unlocked(void)
+{
+    if (!mounted || card == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return sdmmc_get_status(card);
+}
+
+static esp_err_t sd_unmount_unlocked(void)
+{
+    esp_err_t result = ESP_OK;
+    if (mounted) {
+        result = esp_vfs_fat_sdcard_unmount(SD_MOUNT_POINT, card);
+        if (result != ESP_OK) {
+            ESP_LOGW(TAG, "SD unmount failed: %s", esp_err_to_name(result));
+        }
+        mounted = false;
+        card = NULL;
+    }
+    verified = false;
+    if (bus_initialized) {
+        esp_err_t cleanup = spi_bus_free(SPI2_HOST);
+        if (cleanup == ESP_OK) {
+            bus_initialized = false;
+        } else {
+            ESP_LOGW(TAG, "SPI bus cleanup failed: %s", esp_err_to_name(cleanup));
+            if (result == ESP_OK) {
+                result = cleanup;
+            }
+        }
+    }
+    return result;
+}
+
+static esp_err_t sd_write_file_unlocked(const char *name, const void *data, size_t length)
 {
     if (!mounted) {
         return ESP_ERR_INVALID_STATE;
@@ -152,7 +212,7 @@ esp_err_t sd_write_file(const char *name, const void *data, size_t length)
     return err;
 }
 
-esp_err_t sd_read_file(const char *name, void *data, size_t capacity, size_t *length)
+static esp_err_t sd_read_file_unlocked(const char *name, void *data, size_t capacity, size_t *length)
 {
     if (length != NULL) {
         *length = 0;
@@ -197,7 +257,7 @@ esp_err_t sd_read_file(const char *name, void *data, size_t capacity, size_t *le
     return err;
 }
 
-esp_err_t sd_self_test(void)
+static esp_err_t sd_self_test_unlocked(void)
 {
     if (!mounted) {
         return ESP_ERR_INVALID_STATE;
@@ -210,7 +270,7 @@ esp_err_t sd_self_test(void)
     size_t length = 0;
     for (int slot = 0; slot < 2; ++slot) {
         sd_probe_t previous = {0};
-        esp_err_t err = sd_read_file(files[slot], &previous, sizeof(previous), &length);
+        esp_err_t err = sd_read_file_unlocked(files[slot], &previous, sizeof(previous), &length);
         if (err == ESP_ERR_NOT_FOUND) {
             continue;
         }
@@ -246,12 +306,12 @@ esp_err_t sd_self_test(void)
     };
     next.checksum = probe_checksum(&next);
     const char *target = files[last_slot == 0 ? 1 : 0];
-    esp_err_t err = sd_write_file(target, &next, sizeof(next));
+    esp_err_t err = sd_write_file_unlocked(target, &next, sizeof(next));
     if (err != ESP_OK) {
         return err;
     }
     sd_probe_t reread = {0};
-    err = sd_read_file(target, &reread, sizeof(reread), &length);
+    err = sd_read_file_unlocked(target, &reread, sizeof(reread), &length);
     if (err != ESP_OK || length != sizeof(reread) ||
         memcmp(&reread, &next, sizeof(next)) != 0) {
         ESP_LOGE(TAG, "SD read-back verification failed");
@@ -261,4 +321,81 @@ esp_err_t sd_self_test(void)
              (unsigned long)next.sequence);
     verified = true;
     return ESP_OK;
+}
+
+static esp_err_t sd_take_lock(void)
+{
+    if (sd_mutex == NULL) {
+        return ESP_ERR_INVALID_STATE;
+    }
+    return xSemaphoreTake(sd_mutex, portMAX_DELAY) == pdTRUE ? ESP_OK : ESP_FAIL;
+}
+
+esp_err_t sd_init(void)
+{
+    esp_err_t err = sd_take_lock();
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = sd_init_unlocked();
+    xSemaphoreGive(sd_mutex);
+    return err;
+}
+
+esp_err_t sd_check_media(void)
+{
+    esp_err_t err = sd_take_lock();
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = sd_check_media_unlocked();
+    xSemaphoreGive(sd_mutex);
+    return err;
+}
+
+esp_err_t sd_unmount(void)
+{
+    esp_err_t err = sd_take_lock();
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = sd_unmount_unlocked();
+    xSemaphoreGive(sd_mutex);
+    return err;
+}
+
+esp_err_t sd_write_file(const char *name, const void *data, size_t length)
+{
+    esp_err_t err = sd_take_lock();
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = sd_write_file_unlocked(name, data, length);
+    xSemaphoreGive(sd_mutex);
+    return err;
+}
+
+esp_err_t sd_read_file(const char *name, void *data, size_t capacity, size_t *length)
+{
+    if (length != NULL) {
+        *length = 0;
+    }
+    esp_err_t err = sd_take_lock();
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = sd_read_file_unlocked(name, data, capacity, length);
+    xSemaphoreGive(sd_mutex);
+    return err;
+}
+
+esp_err_t sd_self_test(void)
+{
+    esp_err_t err = sd_take_lock();
+    if (err != ESP_OK) {
+        return err;
+    }
+    err = sd_self_test_unlocked();
+    xSemaphoreGive(sd_mutex);
+    return err;
 }

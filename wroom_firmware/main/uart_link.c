@@ -4,8 +4,10 @@
 #include <string.h>
 
 #include "driver/uart.h"
+#include "esp_err.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/semphr.h"
 #include "freertos/task.h"
 
 #define UART_LINK_PORT UART_NUM_2
@@ -14,6 +16,8 @@
 #define UART_LINK_BAUD 115200
 
 static const char *TAG = "WROOM_UART";
+static StaticSemaphore_t tx_mutex_storage;
+static SemaphoreHandle_t tx_mutex;
 
 void uart_link_init(void)
 {
@@ -30,6 +34,10 @@ void uart_link_init(void)
     ESP_ERROR_CHECK(uart_set_pin(UART_LINK_PORT, UART_LINK_TX_GPIO,
                                 UART_LINK_RX_GPIO, UART_PIN_NO_CHANGE,
                                 UART_PIN_NO_CHANGE));
+    tx_mutex = xSemaphoreCreateMutexStatic(&tx_mutex_storage);
+    if (tx_mutex == NULL) {
+        ESP_ERROR_CHECK(ESP_ERR_NO_MEM);
+    }
     ESP_LOGI(TAG, "UART2 TX%d RX%d, %d baud, 8N1", UART_LINK_TX_GPIO,
              UART_LINK_RX_GPIO, UART_LINK_BAUD);
 }
@@ -44,9 +52,14 @@ void uart_link_send(const char *message)
         ESP_LOGW(TAG, "Ignoring message without newline terminator");
         return;
     }
+    if (tx_mutex == NULL || xSemaphoreTake(tx_mutex, portMAX_DELAY) != pdTRUE) {
+        ESP_LOGE(TAG, "UART TX mutex unavailable");
+        return;
+    }
     if (uart_write_bytes(UART_LINK_PORT, message, length) != (int)length) {
         ESP_LOGE(TAG, "UART write failed");
     }
+    xSemaphoreGive(tx_mutex);
 }
 
 int uart_link_read_line(char *buffer, size_t capacity, uint32_t timeout_ms)

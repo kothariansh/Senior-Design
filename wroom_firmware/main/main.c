@@ -54,10 +54,69 @@ static atomic_bool last_nfc_unknown;
 // 0 = checking, 1 = mounted and read/write verified, -1 = unavailable.
 static atomic_int sd_state;
 
+#define SD_READY_POLL_MS 750
+#define SD_RETRY_MS 1500
+#define SD_REMOVAL_CONFIRMATIONS 2
+
 static const char *sd_status_message(void)
 {
     int state = atomic_load(&sd_state);
     return state > 0 ? "SD:READY\n" : state < 0 ? "SD:ERROR\n" : "SD:CHECKING\n";
+}
+
+static void sd_publish_state(int state)
+{
+    if (atomic_exchange(&sd_state, state) != state) {
+        uart_link_send(sd_status_message());
+    }
+}
+
+static void sd_monitor_task(void *arg)
+{
+    (void)arg;
+    int missing_checks = 0;
+    for (;;) {
+        if (!sd_is_ready()) {
+            // Failed mounts stay at ERROR; do not flicker to CHECKING on every retry.
+            esp_err_t err = sd_init();
+            if (err == ESP_OK) {
+                sd_publish_state(0);
+                // Give the S3 one display refresh before the read/write check.
+                vTaskDelay(pdMS_TO_TICKS(300));
+                err = sd_self_test();
+                if (err == ESP_OK) {
+                    missing_checks = 0;
+                    sd_publish_state(1);
+                    vTaskDelay(pdMS_TO_TICKS(SD_READY_POLL_MS));
+                    continue;
+                }
+                esp_err_t cleanup = sd_unmount();
+                if (cleanup != ESP_OK) {
+                    ESP_LOGW(TAG, "SD cleanup failed: %s", esp_err_to_name(cleanup));
+                }
+            }
+            sd_publish_state(-1);
+            ESP_LOGW(TAG, "SD unavailable: %s", esp_err_to_name(err));
+            vTaskDelay(pdMS_TO_TICKS(SD_RETRY_MS));
+            continue;
+        }
+
+        esp_err_t err = sd_check_media();
+        if (err == ESP_OK) {
+            missing_checks = 0;
+        } else if (++missing_checks >= SD_REMOVAL_CONFIRMATIONS) {
+            ESP_LOGW(TAG, "SD media lost: %s", esp_err_to_name(err));
+            sd_publish_state(-1);
+            esp_err_t cleanup = sd_unmount();
+            if (cleanup != ESP_OK) {
+                ESP_LOGW(TAG, "SD cleanup failed: %s", esp_err_to_name(cleanup));
+            }
+            missing_checks = 0;
+            vTaskDelay(pdMS_TO_TICKS(SD_RETRY_MS));
+            continue;
+        }
+        vTaskDelay(pdMS_TO_TICKS(SD_READY_POLL_MS));
+    }
 }
 
 static void uart_receive_task(void *arg)
@@ -107,16 +166,16 @@ void app_main(void)
     }
     uart_link_send("WROOM:READY\n");
 
-    // SD is optional for the current S3-owned game. A bad or absent card
-    // must not stop NFC, audio, or UART from continuing to run.
-    esp_err_t sd_err = sd_init();
+    // The SD monitor owns mount/retry work; NFC and audio continue independently.
+    esp_err_t sd_err = sd_prepare();
     if (sd_err == ESP_OK) {
-        sd_err = sd_self_test();
+        if (xTaskCreate(sd_monitor_task, "sd_monitor", 8192, NULL, 4, NULL) != pdPASS) {
+            sd_err = ESP_ERR_NO_MEM;
+        }
     }
-    atomic_store(&sd_state, sd_err == ESP_OK ? 1 : -1);
-    uart_link_send(sd_status_message());
     if (sd_err != ESP_OK) {
-        ESP_LOGW(TAG, "SD unavailable: %s", esp_err_to_name(sd_err));
+        sd_publish_state(-1);
+        ESP_LOGE(TAG, "SD monitor unavailable: %s", esp_err_to_name(sd_err));
     }
 
     ESP_LOGI(TAG, "Audio ready");
