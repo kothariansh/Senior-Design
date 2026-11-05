@@ -26,8 +26,9 @@ std::deque<std::array<lv_point_precise_t,7>> lines;
 std::function<void()> confirmed;
 std::string message,confirmation;
 bool wroomReady=false;
+const char *sdStatus="SD: checking...";
 std::string uartStatus="No player or NFC event";
-std::string statusText(){return std::string(wroomReady?"WROOM: READY":"WROOM: waiting...")+"  |  "+uartStatus;}
+std::string statusText(){return std::string(wroomReady?"WROOM: READY":"WROOM: waiting...")+"  |  "+sdStatus+"  |  "+uartStatus;}
 lv_obj_t* statusLabel=nullptr;
 Hand offer{},request{},discardAmount{};
 int partner=-1,giveR=0,takeR=1,batches=1,buildKind=0,site=-1,devKind=0,res1=0,res2=1,hexChoice=0;
@@ -188,7 +189,7 @@ void render(){
  case Page::Welcome:
   text("TEAM 27 | DIGITAL TRADING",170,40,570,GOLD);text("CATAN",300,115,400,GOLD,bigFont());
   text("Build. Trade. Settle.",255,200,500);button("START GAME",245,285,310,[]{uart_link_send("ACTION:START\n");game.reset(new Game(seed()));viewer=-1;tradeApproval=0;go(Page::Board);});
-  statusLabel=text(statusText(),250,248,520,GOLD,LV_FONT_DEFAULT);
+  statusLabel=text(statusText(),50,248,700,GOLD,LV_FONT_DEFAULT);
   text("Prototype: sample board, simulated cards, no saved games",85,409,700,GOLD);break;
  case Page::Board:
   // Intentionally preserve the requested board-recognition bypass.
@@ -305,7 +306,9 @@ void render(){
   button("CANCEL",22,411,245,[]{confirmed=nullptr;go(returnPage);});
   button("CONFIRM",450,411,325,[]{auto fn=confirmed;if(fn)fn();});break;
  case Page::Storage:
-  header("Persistence & integrations");text("SD persistence is not connected in this build.\nA reset or power loss clears the game.\n\nBoard recognition / Bluetooth: pending integration.\nNFC: simulated card button only.\nSound: not connected; all feedback is visual.",25,100,740);back();break;
+  header("Persistence & integrations");
+  text("WROOM checks SD mount, write, read and previous boot's test record.\nGame saves are not connected yet; an S3 reset clears this game.\nBoard recognition and real player NFC access remain pending.",25,100,740);
+  statusLabel=text(statusText(),25,265,750,GOLD,LV_FONT_DEFAULT);back();break;
  }
  if(!message.empty())text(message,22,382,752,GOLD,LV_FONT_DEFAULT);
 }
@@ -314,6 +317,9 @@ void render(){
 extern "C" void catan_ui_set_status(const char *status){
  if(!status)return;
  if(std::strcmp(status,"WROOM:READY")==0)wroomReady=true;
+ else if(std::strcmp(status,"SD:CHECKING")==0)sdStatus="SD: checking...";
+ else if(std::strcmp(status,"SD:READY")==0)sdStatus="SD: READY";
+ else if(std::strcmp(status,"SD:ERROR")==0)sdStatus="SD: ERROR";
  else uartStatus=status;
  if(statusLabel)lv_label_set_text(statusLabel,statusText().c_str());
 }

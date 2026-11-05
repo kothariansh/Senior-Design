@@ -51,6 +51,14 @@ static bool is_player_1(
 // Only NFC/controller code changes player identity. UI actions are intents.
 static atomic_int current_player;
 static atomic_bool last_nfc_unknown;
+// 0 = checking, 1 = mounted and read/write verified, -1 = unavailable.
+static atomic_int sd_state;
+
+static const char *sd_status_message(void)
+{
+    int state = atomic_load(&sd_state);
+    return state > 0 ? "SD:READY\n" : state < 0 ? "SD:ERROR\n" : "SD:CHECKING\n";
+}
 
 static void uart_receive_task(void *arg)
 {
@@ -63,6 +71,7 @@ static void uart_receive_task(void *arg)
         ESP_LOGI(TAG, "S3 -> WROOM: %s", line);
         if (strcmp(line, "S3:READY") == 0) {
             uart_link_send("WROOM:READY\n");
+            uart_link_send(sd_status_message());
             if (atomic_load(&current_player) == 1) {
                 uart_link_send("PLAYER:1\n");
             }
@@ -84,18 +93,6 @@ void app_main(void)
 {
     ESP_LOGI(TAG, "Starting CATAN WROOM controller");
 
-    /*
-     * WROOM owns the primary hardware/backend peripherals.
-     */
-    // if (sd_init() != ESP_OK) {
-    //     printf("SD card initialization failed\n");
-    //     return;
-    // }
-
-    // load_saved_game();
-    // xTaskCreate(autosave_task, "autosave_task", 4096, NULL, 5, NULL);
-    // printf("CATAN system started\n");
-
     audio_init();
 
     if (!nfc_init()) {
@@ -109,6 +106,18 @@ void app_main(void)
         ESP_ERROR_CHECK(ESP_ERR_NO_MEM);
     }
     uart_link_send("WROOM:READY\n");
+
+    // SD is optional for the current S3-owned game. A bad or absent card
+    // must not stop NFC, audio, or UART from continuing to run.
+    esp_err_t sd_err = sd_init();
+    if (sd_err == ESP_OK) {
+        sd_err = sd_self_test();
+    }
+    atomic_store(&sd_state, sd_err == ESP_OK ? 1 : -1);
+    uart_link_send(sd_status_message());
+    if (sd_err != ESP_OK) {
+        ESP_LOGW(TAG, "SD unavailable: %s", esp_err_to_name(sd_err));
+    }
 
     ESP_LOGI(TAG, "Audio ready");
     ESP_LOGI(TAG, "Waiting for NFC fob");

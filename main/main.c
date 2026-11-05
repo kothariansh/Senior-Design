@@ -42,7 +42,10 @@ static void uart_receive_task(void *arg)
             }
             if (strcmp(line, "WROOM:READY") == 0 ||
                 strcmp(line, "PLAYER:1") == 0 ||
-                strcmp(line, "NFC:UNKNOWN") == 0) {
+                strcmp(line, "NFC:UNKNOWN") == 0 ||
+                strcmp(line, "SD:CHECKING") == 0 ||
+                strcmp(line, "SD:READY") == 0 ||
+                strcmp(line, "SD:ERROR") == 0) {
                 ESP_ERROR_CHECK(esp_lv_adapter_lock(-1));
                 catan_ui_set_status(line);
                 esp_lv_adapter_unlock();
