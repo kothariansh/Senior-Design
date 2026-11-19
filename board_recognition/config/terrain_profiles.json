@@ -1,0 +1,14 @@
+{
+  "version": 1,
+  "provenance": "Heuristic HSV prototypes, adjusted against unlabeled development feature ranges. Not manually verified real-board reference profiles.",
+  "verified_labels": false,
+  "distance_scales": [7.0, 45.0, 50.0],
+  "profiles": {
+    "forest": [[42, 150, 100], [28, 130, 145]],
+    "pasture": [[30, 180, 190]],
+    "fields": [[19, 225, 210]],
+    "hills": [[13, 210, 180]],
+    "mountains": [[15, 110, 135]],
+    "desert": [[18, 150, 215]]
+  }
+}

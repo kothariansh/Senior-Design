@@ -1,0 +1,90 @@
+{
+  "method": "homography",
+  "status": "success",
+  "canonical_size": [
+    1100,
+    1100
+  ],
+  "boundary_clipped": true,
+  "blue_frame_prior": true,
+  "reference_matches": 1751,
+  "inliers": 1542,
+  "inlier_fraction": 0.8806396344945745,
+  "inlier_median_error_px": 0.9009263515472412,
+  "inlier_rms_error_px": 1.163687825202942,
+  "inlier_coverage": 0.7145635450083015,
+  "error_interpretation": "Internal feature fit residual, not ground-truth alignment accuracy.",
+  "mode": "automatic_reference",
+  "orientation": "aligned_to_reference",
+  "homography": [
+    [
+      0.45339150005190904,
+      -0.19363595415426493,
+      210.23737031688518
+    ],
+    [
+      0.2402727951249226,
+      0.7142125755152069,
+      -159.54196942772884
+    ],
+    [
+      -6.965720683170845e-05,
+      0.0002868242728627417,
+      1.0
+    ]
+  ],
+  "detected_boundary": [
+    [
+      1103.11669921875,
+      0.0
+    ],
+    [
+      1889.61669921875,
+      322.66668701171875
+    ],
+    [
+      2111.449951171875,
+      1131.3499755859375
+    ],
+    [
+      1226.13330078125,
+      1782.7333984375
+    ],
+    [
+      183.51666259765625,
+      1175.7166748046875
+    ],
+    [
+      360.98333740234375,
+      284.3500061035156
+    ]
+  ],
+  "reference_points": [
+    [
+      1103.11669921875,
+      0.0
+    ],
+    [
+      1889.61669921875,
+      322.66668701171875
+    ],
+    [
+      2111.449951171875,
+      1131.3499755859375
+    ],
+    [
+      1226.13330078125,
+      1782.7333984375
+    ],
+    [
+      183.51666259765625,
+      1175.7166748046875
+    ],
+    [
+      360.98333740234375,
+      284.3500061035156
+    ]
+  ],
+  "reference_image": "testing_images/our_board/board_no_number/1.jpeg",
+  "reference_anchor_orientation": "ambiguous_modulo_60_degrees"
+}

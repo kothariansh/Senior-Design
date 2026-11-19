@@ -1,0 +1,58 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Traditional CV CATAN board result",
+  "type": "object",
+  "required": ["schema_version", "board_type", "source_image", "calibration", "tile_count", "tiles", "validation", "evidence"],
+  "properties": {
+    "schema_version": {"const": "1.0"},
+    "board_type": {"const": "standard_catan"},
+    "source_image": {"type": "string"},
+    "tile_count": {"const": 19},
+    "calibration": {
+      "type": "object",
+      "required": ["method", "status", "mode", "orientation", "homography"],
+      "properties": {
+        "method": {"const": "homography"},
+        "status": {"const": "success"},
+        "mode": {"enum": ["manual", "automatic_reference", "automatic_boundary"]},
+        "orientation": {"enum": ["user_defined_correspondences", "aligned_to_reference", "ambiguous_modulo_60_degrees"]},
+        "homography": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "array", "minItems": 3, "maxItems": 3, "items": {"type": "number"}}}
+      }
+    },
+    "tiles": {
+      "type": "array", "minItems": 19, "maxItems": 19,
+      "items": {
+        "type": "object",
+        "required": ["tile_id", "row", "col", "center", "polygon", "terrain", "resource", "number", "hsv", "terrain_score", "number_score", "status", "token", "occlusion", "terrain_recognition", "number_recognition"],
+        "properties": {
+          "tile_id": {"type": "string", "pattern": "^r[0-4]c[0-4]$"},
+          "row": {"type": "integer", "minimum": 0, "maximum": 4},
+          "col": {"type": "integer", "minimum": 0, "maximum": 4},
+          "center": {"$ref": "#/$defs/point"},
+          "polygon": {"type": "array", "minItems": 6, "maxItems": 6, "items": {"$ref": "#/$defs/point"}},
+          "terrain": {"enum": ["forest", "pasture", "fields", "hills", "mountains", "desert", null]},
+          "resource": {"enum": ["lumber", "wool", "grain", "brick", "ore", null]},
+          "number": {"enum": [2, 3, 4, 5, 6, 8, 9, 10, 11, 12, null]},
+          "hsv": {"type": ["object", "null"]},
+          "terrain_score": {"$ref": "#/$defs/score"},
+          "number_score": {"$ref": "#/$defs/score"},
+          "status": {"enum": ["recognized", "requires_review"]},
+          "token": {"type": "object", "required": ["status", "center", "radius"]},
+          "occlusion": {"type": "object", "required": ["possible", "status", "method"]},
+          "terrain_recognition": {"type": "object", "required": ["status"]},
+          "number_recognition": {"type": "object", "required": ["status", "number", "score"]}
+        }
+      }
+    },
+    "validation": {
+      "type": "object",
+      "required": ["valid", "inventory_consistent", "ready_for_controller", "issues", "requires_review"],
+      "properties": {"valid": {"type": "boolean"}, "inventory_consistent": {"type": "boolean"}, "ready_for_controller": {"type": "boolean"}}
+    },
+    "evidence": {"type": "object", "required": ["ground_truth_available", "accuracy", "score_interpretation"]}
+  },
+  "$defs": {
+    "point": {"type": "array", "minItems": 2, "maxItems": 2, "items": {"type": "number"}},
+    "score": {"type": ["number", "null"], "minimum": 0, "maximum": 1}
+  }
+}

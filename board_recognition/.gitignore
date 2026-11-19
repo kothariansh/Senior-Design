@@ -1,14 +1,18 @@
-# Local API credentials - NEVER commit
+# Local credentials
 .env
 .env.local
 .env.*.local
 
-# Python
+# Python environments and caches
+.venv/
 __pycache__/
 *.pyc
+.ruff_cache/
 
-# macOS
-.DS_Store
-
-# Locally generated output
+# Generated local outputs
+outputs/
 board_setup_gemini.json
+
+# OS metadata and temporary Office documents
+.DS_Store
+~$*
