@@ -12,31 +12,37 @@
 #include "uart_link.h"
 
 #include "esp_log.h"
+#include "esp_timer.h"
+#include "esp_system.h"
 #include "esp_lv_adapter.h"
 #include "lvgl.h"
 #include "waveshare_rgb_lcd_port.h"
 
 static const char *TAG = "lvgl9_demo";
 void catan_ui_init(void);
+static uint32_t lvgl_tick_from_esp_timer(void)
+{
+    return (uint32_t)(esp_timer_get_time() / 1000);
+}
 void catan_ui_set_status(const char *text);
 
 static void uart_receive_task(void *arg)
 {
     (void)arg;
     char line[UART_LINK_LINE_SIZE];
-    bool wroom_ready = false;
+
     TickType_t last_ready = xTaskGetTickCount();
     uart_link_send("S3:READY\n");
     for (;;) {
         int length = uart_link_read_line(line, sizeof(line), 100);
         if (length > 0) {
-            ESP_LOGI(TAG, "WROOM -> S3: %s", line);
-            if (strcmp(line, "WROOM:READY") == 0) {
-                wroom_ready = true;
-            }
+
             if (strcmp(line, "WROOM:READY") == 0 ||
-                strcmp(line, "PLAYER:1") == 0 ||
-                strcmp(line, "NFC:UNKNOWN") == 0) {
+                strncmp(line,"BOARD:",6)==0 || strncmp(line,"UID:",4)==0 || strncmp(line,"SAVE:",5)==0 || strncmp(line,"LOAD:",5)==0 || strcmp(line,"NFC:OFFLINE")==0 ||
+                strcmp(line, "NFC:UNKNOWN") == 0 ||
+                strcmp(line, "SD:CHECKING") == 0 ||
+                strcmp(line, "SD:READY") == 0 ||
+                strcmp(line, "SD:ERROR") == 0) {
                 ESP_ERROR_CHECK(esp_lv_adapter_lock(-1));
                 catan_ui_set_status(line);
                 esp_lv_adapter_unlock();
@@ -44,7 +50,7 @@ static void uart_receive_task(void *arg)
                 ESP_LOGW(TAG, "Ignoring unsupported WROOM message");
             }
         }
-        if (!wroom_ready && xTaskGetTickCount() - last_ready >= pdMS_TO_TICKS(1000)) {
+        if (xTaskGetTickCount() - last_ready >= pdMS_TO_TICKS(1000)) {
             uart_link_send("S3:READY\n");
             last_ready = xTaskGetTickCount();
         }
@@ -53,6 +59,7 @@ static void uart_receive_task(void *arg)
 
 void app_main(void)
 {
+    ESP_LOGI(TAG, "Reset reason: %d", esp_reset_reason());
     uart_link_init();
     const esp_lv_adapter_rotation_t rotation = ESP_LV_ADAPTER_ROTATE_0;
     const esp_lv_adapter_tear_avoid_mode_t tear_mode = ESP_LV_ADAPTER_TEAR_AVOID_MODE_DEFAULT_RGB;
@@ -89,6 +96,7 @@ void app_main(void)
         assert(touch != NULL);
     }
 
+    lv_tick_set_cb(lvgl_tick_from_esp_timer);
     ESP_ERROR_CHECK(esp_lv_adapter_start());
 
     ESP_LOGI(TAG, "Starting CATAN welcome screen");
@@ -96,7 +104,7 @@ void app_main(void)
     catan_ui_init();
     esp_lv_adapter_unlock();
 
-    if (xTaskCreate(uart_receive_task, "uart_receive", 4096, NULL, 5, NULL) != pdPASS) {
+    if (xTaskCreate(uart_receive_task, "uart_receive", 12288, NULL, 5, NULL) != pdPASS) {
         ESP_LOGE(TAG, "Unable to create UART receive task");
         ESP_ERROR_CHECK(ESP_ERR_NO_MEM);
     }

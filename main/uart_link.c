@@ -27,7 +27,7 @@ void uart_link_init(void)
         .flow_ctrl = UART_HW_FLOWCTRL_DISABLE,
         .source_clk = UART_SCLK_DEFAULT,
     };
-    ESP_ERROR_CHECK(uart_driver_install(UART_LINK_PORT, 1024, 0, 0, NULL, 0));
+    ESP_ERROR_CHECK(uart_driver_install(UART_LINK_PORT, 8192, 0, 0, NULL, 0));
     ESP_ERROR_CHECK(uart_param_config(UART_LINK_PORT, &config));
     ESP_ERROR_CHECK(uart_set_pin(UART_LINK_PORT, UART_LINK_TX_GPIO,
                                 UART_LINK_RX_GPIO, UART_PIN_NO_CHANGE,

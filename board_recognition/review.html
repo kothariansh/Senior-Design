@@ -1,0 +1,18 @@
+<!doctype html><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>CATAN board review</title><style>body{max-width:36em;margin:2em auto;font:18px system-ui;background:#fff3d6;color:#46151d}select,input,button{margin:.4em;padding:.4em}button{background:#921b24;color:white}</style>
+<h1>Review your board</h1><p>Open the recognition pipeline’s board.json. Rows run from the top of the photograph down. Correct every tile before sending.</p>
+<input id="file" type="file" accept=".json"><div id="tiles"></div><label>Replace SD slot <select id="slot"><option>1<option>2<option>3</select></label>
+<button id="send" disabled>Confirm and transfer</button><output id="result"></output>
+<script>
+const sizes=[3,4,5,4,3],terrains=['hills','forest','pasture','fields','mountains','desert'],service='ca000000-0000-0000-0000-000000000001',chr='ca000000-0000-0000-0000-000000000002';
+let edits=[];
+function menu(items,value){const s=document.createElement('select');for(const t of ['?',...items])s.add(new Option(t,t));s.value=items.includes(value)?value:'?';return s}
+file.onchange=async()=>{tiles.replaceChildren();edits=[];send.disabled=true;try{const data=JSON.parse(await file.files[0].text()).tiles;if(data.length!==19)throw Error('Expected 19 tiles');
+for(let r=0;r<5;r++)for(let c=0;c<sizes[r];c++){const t=data.find(x=>x.row===r&&x.col===c);if(!t)throw Error('Missing tile position');
+const row=document.createElement('div'),a=menu(terrains,t.terrain),n=menu(['2','3','4','5','6','8','9','10','11','12'],String(t.number));row.append('Row '+(r+1)+' · Tile '+(c+1),a,n);tiles.append(row);edits.push([a,n]);}send.disabled=false;result.textContent='';}catch(e){result.textContent=e.message}};
+send.onclick=async()=>{let server;try{const cells=edits.map(([a,n])=>{let i=terrains.indexOf(a.value);if(i<0||(i!==5&&n.value==='?'))throw Error('Resolve all terrain and token fields');return 16*i+(i===5?0:Number(n.value))});
+if(cells.filter(v=>v===80).length!==1)throw Error('Expected one desert');
+if(!navigator.bluetooth)throw Error('Open on HTTPS or localhost in a Web Bluetooth browser');
+const device=await navigator.bluetooth.requestDevice({filters:[{services:[service]}]});server=await device.gatt.connect();
+const ch=await(await server.getPrimaryService(service)).getCharacteristic(chr);await ch.writeValueWithResponse(Uint8Array.from([slot.selectedIndex,...cells]));result.textContent='Saved. Load that slot on the touchscreen.';}catch(e){result.textContent=e.message}finally{if(server)server.disconnect()}};
+</script>

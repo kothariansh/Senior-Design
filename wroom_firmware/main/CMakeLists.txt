@@ -2,6 +2,7 @@ idf_component_register(
     SRCS
         "main.c"
         "audio.c"
+        "boards.c"
         "nfc.c"
         "uart_link.c"
         "sd_card.c"
@@ -10,9 +11,11 @@ idf_component_register(
         "."
 
     REQUIRES
-        esp_driver_dac
+        bt nvs_flash
+        esp_driver_dac esp_driver_gpio
         esp_driver_uart
         esp_driver_spi
+        esp_driver_sdspi
         esp_timer
         fatfs
         sdmmc
@@ -21,6 +24,7 @@ idf_component_register(
     EMBED_FILES
         "sounds/ka_ching.raw"
         "sounds/error.raw"
-        "sounds/dice.raw"
+        "sounds/dice_louder.raw"
         "sounds/build.raw"
+        "sounds/robber.raw"
 )

@@ -1,0 +1,119 @@
+[
+  {
+    "path": "testing_images/our_board/board_no_number/1.jpeg",
+    "raw_dimensions": [
+      2420,
+      1816
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      2420,
+      1816
+    ],
+    "sha256": "c72983b3977cbbc62a4d8c7abe55ced0ab02abab443a7a18183beb57342b2810"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/2.jpeg",
+    "raw_dimensions": [
+      1816,
+      2420
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      1816,
+      2420
+    ],
+    "sha256": "09f6fe756bb55aa38dfd2d3f5e4d591ced5d560a9c38eec5e4f6701740c3dba1"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/3.jpeg",
+    "raw_dimensions": [
+      2420,
+      1816
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      2420,
+      1816
+    ],
+    "sha256": "8ba7d2e9542c712e86ef0f9a200baf08c4fe1767572150cc05997abf315afe48"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/4.jpeg",
+    "raw_dimensions": [
+      2420,
+      1816
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      2420,
+      1816
+    ],
+    "sha256": "a62685e47695a0a21c2668107587df744aebe5ebc1c4e0d5ba03f1a02626e5ca"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/5.jpeg",
+    "raw_dimensions": [
+      2420,
+      1816
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      2420,
+      1816
+    ],
+    "sha256": "219346ab2f158bc14ecd688e046cc5e8921154e56c231fb6df2b220f014b5c5f"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/6.jpeg",
+    "raw_dimensions": [
+      2420,
+      1816
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      2420,
+      1816
+    ],
+    "sha256": "0461e2ac2e4c1d7801b97e7c7ad6eea2bc2cba6955eefac253162113270cf5b3"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/7.jpeg",
+    "raw_dimensions": [
+      2420,
+      1816
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      2420,
+      1816
+    ],
+    "sha256": "f7d8f552bbd0d14f1fb294cc9d624c85709d5e8cb0871a79a2bc0041070f4e40"
+  },
+  {
+    "path": "testing_images/our_board/board_no_number/8.jpeg",
+    "raw_dimensions": [
+      1816,
+      2420
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      1816,
+      2420
+    ],
+    "sha256": "e496d004de9d6f730f10215982c83db460be230e256bc83eab2941167ea49fea"
+  },
+  {
+    "path": "testing_images/our_board/with_number/number1.jpeg",
+    "raw_dimensions": [
+      1816,
+      2420
+    ],
+    "exif_orientation": 1,
+    "oriented_dimensions": [
+      1816,
+      2420
+    ],
+    "sha256": "4e8c9e9ec6f6076be8f80173c2558d4fb91ed158571bbb9832ca6a235e1bbbba"
+  }
+]

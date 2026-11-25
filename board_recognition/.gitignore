@@ -1,0 +1,18 @@
+# Local credentials
+.env
+.env.local
+.env.*.local
+
+# Python environments and caches
+.venv/
+__pycache__/
+*.pyc
+.ruff_cache/
+
+# Generated local outputs
+outputs/
+board_setup_gemini.json
+
+# OS metadata and temporary Office documents
+.DS_Store
+~$*

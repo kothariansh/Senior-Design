@@ -5,10 +5,8 @@
 #include "pn532.h"
 #include "nfc.h"
 
-#define PN532_SCK   18
-#define PN532_MISO  19
-#define PN532_MOSI  23
-#define PN532_SS    21
+#define PN532_SDA 32
+#define PN532_SCL 33
 
 static const char *TAG = "CATAN_NFC";
 
@@ -18,13 +16,13 @@ bool nfc_init(void)
 {
     ESP_LOGI(TAG, "Starting PN532 NFC");
 
-    pn532_spi_init(
-        &pn532,
-        PN532_SCK,
-        PN532_MISO,
-        PN532_MOSI,
-        PN532_SS
-    );
+    ESP_LOGI(TAG, "I2C SDA GPIO%d, SCL GPIO%d, address 0x%02X, 100 kHz",
+             PN532_SDA, PN532_SCL, PN532_I2C_ADDRESS);
+    esp_err_t err = pn532_i2c_init(&pn532, PN532_SDA, PN532_SCL);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "PN532 I2C initialization failed: %s", esp_err_to_name(err));
+        return false;
+    }
 
     pn532_begin(&pn532);
 

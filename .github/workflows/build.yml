@@ -1,0 +1,19 @@
+name: Build both CATAN firmwares
+on: [push, pull_request]
+jobs:
+  firmware:
+    runs-on: ubuntu-latest
+    container: espressif/idf:v5.5.5
+    strategy:
+      matrix:
+        include:
+          - {project: '.', chip: esp32s3}
+          - {project: wroom_firmware, chip: esp32}
+    steps:
+      - uses: actions/checkout@v4
+      - shell: bash
+        working-directory: ${{ matrix.project }}
+        run: |
+          source /opt/esp/idf/export.sh
+          idf.py set-target ${{ matrix.chip }}
+          idf.py build

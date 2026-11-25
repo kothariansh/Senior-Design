@@ -1,0 +1,1735 @@
+{
+  "metric": "Prediction agreement with the first bare-board image, not accuracy.",
+  "assumptions": "These supplied bare-board photographs show the same physical tile arrangement.",
+  "ground_truth_available": false,
+  "cases": [
+    {
+      "image": "1.jpeg",
+      "tiles_matching_first_image_predictions": 19,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 16.0,
+            "s": 126.0,
+            "v": 148.0,
+            "circular_mean_h": 15.564081529075066
+          },
+          "score": 0.9046051827939436
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 129.0,
+            "v": 123.0,
+            "circular_mean_h": 15.281302743904218
+          },
+          "score": 0.888035762213636
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 113.0,
+            "v": 109.0,
+            "circular_mean_h": 14.707701795918233
+          },
+          "score": 0.8708425906703345
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 34.0,
+            "s": 142.0,
+            "v": 103.0,
+            "circular_mean_h": 32.64356469702754
+          },
+          "score": 0.5442301585010856
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 35.0,
+            "s": 151.0,
+            "v": 82.0,
+            "circular_mean_h": 34.549010227551236
+          },
+          "score": 0.5317672155241774
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 44.0,
+            "s": 142.0,
+            "v": 79.0,
+            "circular_mean_h": 43.38032332196006
+          },
+          "score": 0.8838709341771563
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 52.0,
+            "s": 126.0,
+            "v": 86.0,
+            "circular_mean_h": 52.77729504887905
+          },
+          "score": 0.2549654565176769
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 29.0,
+            "s": 209.0,
+            "v": 176.0,
+            "circular_mean_h": 27.572495425033335
+          },
+          "score": 0.7356618465515922
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 29.0,
+            "s": 223.0,
+            "v": 169.0,
+            "circular_mean_h": 28.162925019749178
+          },
+          "score": 0.5603574482244283
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 31.0,
+            "s": 181.0,
+            "v": 178.0,
+            "circular_mean_h": 30.14456503881299
+          },
+          "score": 0.9711637646988137
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 135.0,
+            "v": 228.0,
+            "circular_mean_h": 18.093710170492702
+          },
+          "score": 0.9144384081879561
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 35.0,
+            "s": 146.0,
+            "v": 196.0,
+            "circular_mean_h": 33.12547430051716
+          },
+          "score": 0.6754936078207469
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 233.0,
+            "v": 229.0,
+            "circular_mean_h": 18.364986431084198
+          },
+          "score": 0.9119982700395347
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 18.0,
+            "s": 236.0,
+            "v": 201.0,
+            "circular_mean_h": 18.178333884662948
+          },
+          "score": 0.9484125633816803
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "fields",
+          "hsv": {
+            "h": 18.0,
+            "s": 203.0,
+            "v": 219.0,
+            "circular_mean_h": 18.76780835304734
+          },
+          "score": 0.8726189471430532
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 12.0,
+            "s": 167.0,
+            "v": 220.0,
+            "circular_mean_h": 11.922555468087502
+          },
+          "score": 0.635559752780483
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 18.0,
+            "s": 227.0,
+            "v": 210.0,
+            "circular_mean_h": 17.95443100033002
+          },
+          "score": 0.9879305228998762
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 231.0,
+            "v": 170.0,
+            "circular_mean_h": 12.951944833918187
+          },
+          "score": 0.8790509203034811
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "desert",
+          "hsv": {
+            "h": 13.0,
+            "s": 167.0,
+            "v": 211.0,
+            "circular_mean_h": 12.407260792542893
+          },
+          "score": 0.6745369943412773
+        }
+      ]
+    },
+    {
+      "image": "2.jpeg",
+      "tiles_matching_first_image_predictions": 17,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 97.0,
+            "v": 142.0,
+            "circular_mean_h": 15.060447682402073
+          },
+          "score": 0.9497412689230074
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 122.0,
+            "v": 114.0,
+            "circular_mean_h": 15.435261343516704
+          },
+          "score": 0.881889297677678
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 90.0,
+            "v": 111.0,
+            "circular_mean_h": 14.548445419602537
+          },
+          "score": 0.8056981905210467
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 29.0,
+            "s": 118.0,
+            "v": 137.0,
+            "circular_mean_h": 28.43509079646798
+          },
+          "score": 0.9509562430239541
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 39.0,
+            "s": 135.0,
+            "v": 94.0,
+            "circular_mean_h": 38.058299999492306
+          },
+          "score": 0.801479118260435
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 44.0,
+            "s": 157.0,
+            "v": 73.0,
+            "circular_mean_h": 43.26859171419005
+          },
+          "score": 0.8400276689459515
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 53.0,
+            "s": 145.0,
+            "v": 80.0,
+            "circular_mean_h": 55.14688436237479
+          },
+          "score": 0.15726042195125775
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 27.0,
+            "s": 159.0,
+            "v": 204.0,
+            "circular_mean_h": 25.903026563668973
+          },
+          "score": 0.7266093061151399
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 28.0,
+            "s": 183.0,
+            "v": 186.0,
+            "circular_mean_h": 27.526539238068807
+          },
+          "score": 0.9343998039515551
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 188.0,
+            "v": 173.0,
+            "circular_mean_h": 29.310928594722025
+          },
+          "score": 0.9245505374031033
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 157.0,
+            "v": 208.0,
+            "circular_mean_h": 17.984064827661598
+          },
+          "score": 0.9783367368008503
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 35.0,
+            "s": 155.0,
+            "v": 196.0,
+            "circular_mean_h": 33.96013692706764
+          },
+          "score": 0.7250255522115134
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 221.0,
+            "v": 240.0,
+            "circular_mean_h": 18.823568968500282
+          },
+          "score": 0.8317126678026079
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 231.0,
+            "v": 211.0,
+            "circular_mean_h": 18.79868277773533
+          },
+          "score": 0.9905425592990075
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 230.0,
+            "v": 205.0,
+            "circular_mean_h": 18.87752633419645
+          },
+          "score": 0.9887379978566078
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "hills",
+          "hsv": {
+            "h": 13.0,
+            "s": 201.0,
+            "v": 193.0,
+            "circular_mean_h": 13.120783222443006
+          },
+          "score": 0.9474805564522318
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 222.0,
+            "v": 219.0,
+            "circular_mean_h": 18.350900993733926
+          },
+          "score": 0.9775346863082206
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 228.0,
+            "v": 177.0,
+            "circular_mean_h": 13.385067687415436
+          },
+          "score": 0.9200630930609426
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 218.0,
+            "v": 178.0,
+            "circular_mean_h": 13.462035936594756
+          },
+          "score": 0.9813944525016353
+        }
+      ]
+    },
+    {
+      "image": "3.jpeg",
+      "tiles_matching_first_image_predictions": 16,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 97.0,
+            "v": 140.0,
+            "circular_mean_h": 15.06834580567926
+          },
+          "score": 0.9543010799913834
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 99.0,
+            "v": 126.0,
+            "circular_mean_h": 14.85692473522442
+          },
+          "score": 0.9547694071076318
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 100.0,
+            "v": 109.0,
+            "circular_mean_h": 14.714384069563682
+          },
+          "score": 0.8515272552485544
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 39.0,
+            "s": 113.0,
+            "v": 111.0,
+            "circular_mean_h": 37.58574784479753
+          },
+          "score": 0.5706052897023698
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 36.0,
+            "s": 114.0,
+            "v": 102.0,
+            "circular_mean_h": 35.79371219876564
+          },
+          "score": 0.4897594627594767
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 44.0,
+            "s": 126.0,
+            "v": 88.0,
+            "circular_mean_h": 41.928928957996874
+          },
+          "score": 0.8427594058843804
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 48.0,
+            "s": 136.0,
+            "v": 76.0,
+            "circular_mean_h": 48.93863839278813
+          },
+          "score": 0.5195108731011181
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 162.0,
+            "v": 188.0,
+            "circular_mean_h": 28.884470737352505
+          },
+          "score": 0.9107398246312488
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 29.0,
+            "s": 140.0,
+            "v": 206.0,
+            "circular_mean_h": 27.964182153973358
+          },
+          "score": 0.6135134456167055
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 142.0,
+            "v": 194.0,
+            "circular_mean_h": 29.82065304689317
+          },
+          "score": 0.6976264945572165
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 141.0,
+            "v": 222.0,
+            "circular_mean_h": 18.09345629841808
+          },
+          "score": 0.9705531393486782
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 35.0,
+            "s": 157.0,
+            "v": 186.0,
+            "circular_mean_h": 33.59961862472976
+          },
+          "score": 0.766412943332413
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 197.0,
+            "v": 248.0,
+            "circular_mean_h": 19.11868854730435
+          },
+          "score": 0.6172235571064231
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "desert",
+          "hsv": {
+            "h": 19.0,
+            "s": 175.0,
+            "v": 239.0,
+            "circular_mean_h": 19.25839437249518
+          },
+          "score": 0.7515032640666794
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 193.0,
+            "v": 233.0,
+            "circular_mean_h": 19.10715384873289
+          },
+          "score": 0.6985443082274975
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 193.0,
+            "v": 213.0,
+            "circular_mean_h": 13.367601904296928
+          },
+          "score": 0.7478619221681053
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 199.0,
+            "v": 239.0,
+            "circular_mean_h": 18.649359074988595
+          },
+          "score": 0.7143600568305166
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 197.0,
+            "v": 209.0,
+            "circular_mean_h": 13.547168307106196
+          },
+          "score": 0.8081695306818314
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 195.0,
+            "v": 208.0,
+            "circular_mean_h": 13.705050995481328
+          },
+          "score": 0.8045855547438868
+        }
+      ]
+    },
+    {
+      "image": "4.jpeg",
+      "tiles_matching_first_image_predictions": 17,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 85.0,
+            "v": 124.0,
+            "circular_mean_h": 14.497957167931842
+          },
+          "score": 0.8343578466967084
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 13.0,
+            "s": 77.0,
+            "v": 114.0,
+            "circular_mean_h": 14.085376603485996
+          },
+          "score": 0.693762934280497
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 77.0,
+            "v": 100.0,
+            "circular_mean_h": 14.77715986034502
+          },
+          "score": 0.5978618328952721
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 51.0,
+            "s": 138.0,
+            "v": 94.0,
+            "circular_mean_h": 51.513767344915344
+          },
+          "score": 0.3804711080509926
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 54.0,
+            "s": 147.0,
+            "v": 81.0,
+            "circular_mean_h": 55.11636983037084
+          },
+          "score": 0.16042578699954776
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 62.0,
+            "s": 159.0,
+            "v": 78.0,
+            "circular_mean_h": 61.46936251052716
+          },
+          "score": 0.01859766676941865
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 62.0,
+            "s": 157.0,
+            "v": 72.0,
+            "circular_mean_h": 62.52798094871197
+          },
+          "score": 0.011460162638566477
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 33.0,
+            "s": 175.0,
+            "v": 183.0,
+            "circular_mean_h": 31.38628641283383
+          },
+          "score": 0.9650426885957144
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 33.0,
+            "s": 189.0,
+            "v": 183.0,
+            "circular_mean_h": 32.62265048424936
+          },
+          "score": 0.9048494620327407
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 35.0,
+            "s": 163.0,
+            "v": 184.0,
+            "circular_mean_h": 34.55509004065203
+          },
+          "score": 0.7480533831580095
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 19.0,
+            "s": 117.0,
+            "v": 213.0,
+            "circular_mean_h": 19.05988945494398
+          },
+          "score": 0.7549137280442574
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "forest",
+          "hsv": {
+            "h": 40.0,
+            "s": 104.0,
+            "v": 200.0,
+            "circular_mean_h": 39.00206260033788
+          },
+          "score": 0.13438176543581523
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 214.0,
+            "v": 237.0,
+            "circular_mean_h": 19.733593894731506
+          },
+          "score": 0.8342952088528187
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 214.0,
+            "v": 216.0,
+            "circular_mean_h": 19.797690712619115
+          },
+          "score": 0.9573660079284754
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 195.0,
+            "v": 215.0,
+            "circular_mean_h": 19.42778312411811
+          },
+          "score": 0.7952573127592539
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 12.0,
+            "s": 163.0,
+            "v": 204.0,
+            "circular_mean_h": 12.207363499528986
+          },
+          "score": 0.6647643536373674
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 189.0,
+            "v": 224.0,
+            "circular_mean_h": 19.050203730163275
+          },
+          "score": 0.6982167331190455
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 13.0,
+            "s": 181.0,
+            "v": 195.0,
+            "circular_mean_h": 12.434180834066229
+          },
+          "score": 0.77420299581894
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 181.0,
+            "v": 195.0,
+            "circular_mean_h": 13.10102658457883
+          },
+          "score": 0.7766554466032883
+        }
+      ]
+    },
+    {
+      "image": "5.jpeg",
+      "tiles_matching_first_image_predictions": 17,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 78.0,
+            "v": 152.0,
+            "circular_mean_h": 15.074345936311909
+          },
+          "score": 0.7329367226332828
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 72.0,
+            "v": 142.0,
+            "circular_mean_h": 14.799947151444025
+          },
+          "score": 0.6929817680428848
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 74.0,
+            "v": 122.0,
+            "circular_mean_h": 14.862443354895131
+          },
+          "score": 0.7018798244142069
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 43.0,
+            "s": 119.0,
+            "v": 112.0,
+            "circular_mean_h": 41.23035145404756
+          },
+          "score": 0.7617564231700731
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 39.0,
+            "s": 115.0,
+            "v": 105.0,
+            "circular_mean_h": 37.88184080890053
+          },
+          "score": 0.6184601276554806
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 40.0,
+            "s": 121.0,
+            "v": 90.0,
+            "circular_mean_h": 38.254956012519486
+          },
+          "score": 0.6902025436750415
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 44.0,
+            "s": 127.0,
+            "v": 77.0,
+            "circular_mean_h": 43.85969429303663
+          },
+          "score": 0.7620769673816625
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 31.0,
+            "s": 167.0,
+            "v": 188.0,
+            "circular_mean_h": 29.984585740822805
+          },
+          "score": 0.9583609288177753
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 171.0,
+            "v": 180.0,
+            "circular_mean_h": 28.9990266097085
+          },
+          "score": 0.9510164144281439
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 150.0,
+            "v": 188.0,
+            "circular_mean_h": 29.24271562976675
+          },
+          "score": 0.795428707423296
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 142.0,
+            "v": 223.0,
+            "circular_mean_h": 18.397239745681116
+          },
+          "score": 0.9702391735058636
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 34.0,
+            "s": 164.0,
+            "v": 183.0,
+            "circular_mean_h": 32.75238431553855
+          },
+          "score": 0.8604393780203514
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 213.0,
+            "v": 239.0,
+            "circular_mean_h": 18.99322488497426
+          },
+          "score": 0.8156613487513592
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 204.0,
+            "v": 225.0,
+            "circular_mean_h": 18.864867179852585
+          },
+          "score": 0.8572075356723223
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 162.0,
+            "v": 243.0,
+            "circular_mean_h": 19.020875735633833
+          },
+          "score": 0.8162863066938698
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 14.0,
+            "s": 178.0,
+            "v": 221.0,
+            "circular_mean_h": 13.836430990514884
+          },
+          "score": 0.6854558870024394
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 208.0,
+            "v": 230.0,
+            "circular_mean_h": 18.59182835514593
+          },
+          "score": 0.8580798947174535
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 201.0,
+            "v": 202.0,
+            "circular_mean_h": 13.574672774533209
+          },
+          "score": 0.8867697744233013
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 189.0,
+            "v": 209.0,
+            "circular_mean_h": 13.853581956433613
+          },
+          "score": 0.7523725956723097
+        }
+      ]
+    },
+    {
+      "image": "6.jpeg",
+      "tiles_matching_first_image_predictions": 16,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 96.0,
+            "v": 149.0,
+            "circular_mean_h": 15.415196643110482
+          },
+          "score": 0.914521660758125
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 95.0,
+            "v": 141.0,
+            "circular_mean_h": 15.13315907635417
+          },
+          "score": 0.9390031101435095
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 99.0,
+            "v": 120.0,
+            "circular_mean_h": 14.835963185983072
+          },
+          "score": 0.9276033005766102
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 39.0,
+            "s": 120.0,
+            "v": 110.0,
+            "circular_mean_h": 37.60083001653728
+          },
+          "score": 0.6442304871784663
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 34.0,
+            "s": 107.0,
+            "v": 113.0,
+            "circular_mean_h": 33.11584531074291
+          },
+          "score": 0.5474537942010334
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 36.0,
+            "s": 108.0,
+            "v": 107.0,
+            "circular_mean_h": 34.80068923056609
+          },
+          "score": 0.41468397258005063
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 42.0,
+            "s": 119.0,
+            "v": 84.0,
+            "circular_mean_h": 41.67866139011575
+          },
+          "score": 0.748609638069041
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 172.0,
+            "v": 181.0,
+            "circular_mean_h": 29.158106637524924
+          },
+          "score": 0.9615247595161267
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 30.0,
+            "s": 162.0,
+            "v": 187.0,
+            "circular_mean_h": 29.25723960510941
+          },
+          "score": 0.9162834486192007
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 28.0,
+            "s": 126.0,
+            "v": 216.0,
+            "circular_mean_h": 27.397907363276126
+          },
+          "score": 0.39681278874578735
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 131.0,
+            "v": 237.0,
+            "circular_mean_h": 18.263971599952974
+          },
+          "score": 0.8297367201597439
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 34.0,
+            "s": 149.0,
+            "v": 192.0,
+            "circular_mean_h": 32.82359668849498
+          },
+          "score": 0.7265572370029321
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 213.0,
+            "v": 243.0,
+            "circular_mean_h": 19.278732053581372
+          },
+          "score": 0.7755767548882154
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 206.0,
+            "v": 228.0,
+            "circular_mean_h": 19.053341057154995
+          },
+          "score": 0.8573021668091911
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 187.0,
+            "v": 235.0,
+            "circular_mean_h": 18.82408793062445
+          },
+          "score": 0.6537995345301332
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "hills",
+          "hsv": {
+            "h": 13.0,
+            "s": 184.0,
+            "v": 222.0,
+            "circular_mean_h": 13.260267976970155
+          },
+          "score": 0.5942799354590056
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 207.0,
+            "v": 236.0,
+            "circular_mean_h": 18.890068336116336
+          },
+          "score": 0.8062807145532918
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 204.0,
+            "v": 205.0,
+            "circular_mean_h": 13.518451368415084
+          },
+          "score": 0.8722914645567789
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 194.0,
+            "v": 210.0,
+            "circular_mean_h": 13.53587818539917
+          },
+          "score": 0.7818126571274321
+        }
+      ]
+    },
+    {
+      "image": "7.jpeg",
+      "tiles_matching_first_image_predictions": 17,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 97.0,
+            "v": 119.0,
+            "circular_mean_h": 14.454644965907173
+          },
+          "score": 0.9084974367639365
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 14.0,
+            "s": 88.0,
+            "v": 109.0,
+            "circular_mean_h": 14.213215740984051
+          },
+          "score": 0.7702633573434592
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 93.0,
+            "v": 97.0,
+            "circular_mean_h": 14.826674519148614
+          },
+          "score": 0.6973522798495342
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 49.0,
+            "s": 159.0,
+            "v": 84.0,
+            "circular_mean_h": 49.56967606496738
+          },
+          "score": 0.5189779750683085
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 50.0,
+            "s": 168.0,
+            "v": 72.0,
+            "circular_mean_h": 51.10855234644131
+          },
+          "score": 0.33844657110041954
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 56.0,
+            "s": 178.0,
+            "v": 70.0,
+            "circular_mean_h": 56.14766649025015
+          },
+          "score": 0.08927862542412342
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 54.0,
+            "s": 175.0,
+            "v": 64.0,
+            "circular_mean_h": 55.553598668277836
+          },
+          "score": 0.10146806508584445
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 32.0,
+            "s": 195.0,
+            "v": 174.0,
+            "circular_mean_h": 30.416076714311423
+          },
+          "score": 0.8971590813284004
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 32.0,
+            "s": 215.0,
+            "v": 172.0,
+            "circular_mean_h": 31.490334536271888
+          },
+          "score": 0.6771019739388682
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 34.0,
+            "s": 184.0,
+            "v": 172.0,
+            "circular_mean_h": 33.36546366332804
+          },
+          "score": 0.8316649920016511
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 131.0,
+            "v": 205.0,
+            "circular_mean_h": 18.43972429013752
+          },
+          "score": 0.8948413511660862
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "forest",
+          "hsv": {
+            "h": 37.0,
+            "s": 121.0,
+            "v": 182.0,
+            "circular_mean_h": 36.202184907058005
+          },
+          "score": 0.37520297409100695
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 227.0,
+            "v": 232.0,
+            "circular_mean_h": 19.53014290288984
+          },
+          "score": 0.9042444672779683
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 232.0,
+            "v": 212.0,
+            "circular_mean_h": 19.718451110766356
+          },
+          "score": 0.9819981773957097
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 208.0,
+            "v": 211.0,
+            "circular_mean_h": 19.378151631875056
+          },
+          "score": 0.9295848459952546
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 12.0,
+            "s": 147.0,
+            "v": 204.0,
+            "circular_mean_h": 11.626062318401067
+          },
+          "score": 0.6434028213984481
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 215.0,
+            "v": 223.0,
+            "circular_mean_h": 19.401122815430625
+          },
+          "score": 0.9416391085160813
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 205.0,
+            "v": 193.0,
+            "circular_mean_h": 13.358402812901002
+          },
+          "score": 0.959556980115711
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 181.0,
+            "v": 196.0,
+            "circular_mean_h": 13.05941027730985
+          },
+          "score": 0.7719076680197505
+        }
+      ]
+    },
+    {
+      "image": "8.jpeg",
+      "tiles_matching_first_image_predictions": 17,
+      "tile_count": 19,
+      "tiles": [
+        {
+          "tile_id": "r0c0",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 100.0,
+            "v": 127.0,
+            "circular_mean_h": 14.682199296856918
+          },
+          "score": 0.9622105911204126
+        },
+        {
+          "tile_id": "r0c1",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 14.0,
+            "s": 90.0,
+            "v": 119.0,
+            "circular_mean_h": 14.119355858940265
+          },
+          "score": 0.8539530652764359
+        },
+        {
+          "tile_id": "r0c2",
+          "prediction": "mountains",
+          "hsv": {
+            "h": 15.0,
+            "s": 93.0,
+            "v": 105.0,
+            "circular_mean_h": 14.604778635858993
+          },
+          "score": 0.7765052296668756
+        },
+        {
+          "tile_id": "r1c0",
+          "prediction": "forest",
+          "hsv": {
+            "h": 47.0,
+            "s": 153.0,
+            "v": 89.0,
+            "circular_mean_h": 46.5641941700104
+          },
+          "score": 0.7874209390680446
+        },
+        {
+          "tile_id": "r1c1",
+          "prediction": "forest",
+          "hsv": {
+            "h": 47.0,
+            "s": 158.0,
+            "v": 77.0,
+            "circular_mean_h": 48.37336908771206
+          },
+          "score": 0.5850309270694063
+        },
+        {
+          "tile_id": "r1c2",
+          "prediction": "forest",
+          "hsv": {
+            "h": 54.0,
+            "s": 159.0,
+            "v": 76.0,
+            "circular_mean_h": 54.89184884025617
+          },
+          "score": 0.16023464851025224
+        },
+        {
+          "tile_id": "r1c3",
+          "prediction": "forest",
+          "hsv": {
+            "h": 53.0,
+            "s": 160.0,
+            "v": 69.0,
+            "circular_mean_h": 55.46491439371721
+          },
+          "score": 0.12657359589557052
+        },
+        {
+          "tile_id": "r2c0",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 31.0,
+            "s": 199.0,
+            "v": 174.0,
+            "circular_mean_h": 29.52863134325495
+          },
+          "score": 0.8670982115653344
+        },
+        {
+          "tile_id": "r2c1",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 31.0,
+            "s": 217.0,
+            "v": 174.0,
+            "circular_mean_h": 30.53959924418428
+          },
+          "score": 0.6755718330262347
+        },
+        {
+          "tile_id": "r2c2",
+          "prediction": "pasture",
+          "hsv": {
+            "h": 32.0,
+            "s": 187.0,
+            "v": 176.0,
+            "circular_mean_h": 31.990502563743394
+          },
+          "score": 0.9123529456863486
+        },
+        {
+          "tile_id": "r2c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 18.0,
+            "s": 137.0,
+            "v": 213.0,
+            "circular_mean_h": 18.192571312471483
+          },
+          "score": 0.9580006713106091
+        },
+        {
+          "tile_id": "r2c4",
+          "prediction": "forest",
+          "hsv": {
+            "h": 35.0,
+            "s": 130.0,
+            "v": 185.0,
+            "circular_mean_h": 34.289112510652394
+          },
+          "score": 0.4850024242970266
+        },
+        {
+          "tile_id": "r3c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 229.0,
+            "v": 235.0,
+            "circular_mean_h": 19.386720874268924
+          },
+          "score": 0.8776769700919637
+        },
+        {
+          "tile_id": "r3c1",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 233.0,
+            "v": 215.0,
+            "circular_mean_h": 19.576540812727046
+          },
+          "score": 0.9760960370268129
+        },
+        {
+          "tile_id": "r3c2",
+          "prediction": "fields",
+          "hsv": {
+            "h": 19.0,
+            "s": 210.0,
+            "v": 216.0,
+            "circular_mean_h": 19.23832482850277
+          },
+          "score": 0.9386288541818371
+        },
+        {
+          "tile_id": "r3c3",
+          "prediction": "desert",
+          "hsv": {
+            "h": 12.0,
+            "s": 150.0,
+            "v": 210.0,
+            "circular_mean_h": 11.865358908057328
+          },
+          "score": 0.6777216744606891
+        },
+        {
+          "tile_id": "r4c0",
+          "prediction": "fields",
+          "hsv": {
+            "h": 20.0,
+            "s": 218.0,
+            "v": 225.0,
+            "circular_mean_h": 19.31461155767687
+          },
+          "score": 0.9435473123624986
+        },
+        {
+          "tile_id": "r4c1",
+          "prediction": "hills",
+          "hsv": {
+            "h": 14.0,
+            "s": 204.0,
+            "v": 195.0,
+            "circular_mean_h": 13.334812610816648
+          },
+          "score": 0.9464541404927208
+        },
+        {
+          "tile_id": "r4c2",
+          "prediction": "hills",
+          "hsv": {
+            "h": 13.0,
+            "s": 180.0,
+            "v": 200.0,
+            "circular_mean_h": 13.066500263275552
+          },
+          "score": 0.7391404310670717
+        }
+      ]
+    }
+  ]
+}

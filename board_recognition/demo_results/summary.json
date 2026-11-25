@@ -1,0 +1,191 @@
+{
+  "reference_image": "testing_images/our_board/board_no_number/1.jpeg",
+  "ground_truth_available": false,
+  "accuracy": null,
+  "runtime": {
+    "python": "3.15.0",
+    "opencv": "5.0.0",
+    "numpy": "2.5.4"
+  },
+  "calibration_cases": [
+    {
+      "name": "1.jpeg",
+      "directory": "calibration/1",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.0,
+      "processing_seconds": 0.29812070799926005
+    },
+    {
+      "name": "2.jpeg",
+      "directory": "calibration/2",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.6353702545166016,
+      "processing_seconds": 0.15028841700041085
+    },
+    {
+      "name": "3.jpeg",
+      "directory": "calibration/3",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.7509061098098755,
+      "processing_seconds": 0.14704970800084993
+    },
+    {
+      "name": "4.jpeg",
+      "directory": "calibration/4",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.5351726412773132,
+      "processing_seconds": 0.14823633299965877
+    },
+    {
+      "name": "5.jpeg",
+      "directory": "calibration/5",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.6383148431777954,
+      "processing_seconds": 0.13514304099953733
+    },
+    {
+      "name": "6.jpeg",
+      "directory": "calibration/6",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.4712102711200714,
+      "processing_seconds": 0.13281025000105728
+    },
+    {
+      "name": "7.jpeg",
+      "directory": "calibration/7",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.9009263515472412,
+      "processing_seconds": 0.1479190420013765
+    },
+    {
+      "name": "8.jpeg",
+      "directory": "calibration/8",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.7085641026496887,
+      "processing_seconds": 0.1467904589990212
+    }
+  ],
+  "recognition_cases": [
+    {
+      "name": "number1.jpeg",
+      "directory": "recognition/number1",
+      "status": "success",
+      "mode": "automatic_reference",
+      "median_residual_px": 0.6793465614318848,
+      "processing_seconds": 0.9024227500012785,
+      "validation": {
+        "valid": true,
+        "inventory_consistent": true,
+        "ready_for_controller": false,
+        "issues": [],
+        "requires_review": [
+          "r0c0",
+          "r0c1",
+          "r0c2",
+          "r1c0",
+          "r1c1",
+          "r1c2",
+          "r1c3",
+          "r2c0",
+          "r2c1",
+          "r2c2",
+          "r2c3",
+          "r2c4",
+          "r3c0",
+          "r3c1",
+          "r3c2",
+          "r3c3",
+          "r4c0",
+          "r4c1",
+          "r4c2"
+        ],
+        "orientation_resolved": true,
+        "terrain_counts": {
+          "mountains": 3,
+          "forest": 4,
+          "pasture": 4,
+          "desert": 1,
+          "fields": 4,
+          "hills": 3
+        },
+        "number_counts": {
+          "2": 1,
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 2,
+          "8": 2,
+          "9": 2,
+          "10": 2,
+          "11": 2,
+          "12": 1
+        },
+        "detected_token_count": 18,
+        "message": "Inventory consistency is not recognition accuracy. Predictions have not been forced to match counts."
+      },
+      "recognized_numbers": 18
+    }
+  ],
+  "boundary_only_cases": [
+    {
+      "name": "board_no_number/1.jpeg",
+      "status": "success",
+      "fit_rms_px": 1.5283523797988892,
+      "orientation": "ambiguous_modulo_60_degrees"
+    },
+    {
+      "name": "board_no_number/2.jpeg",
+      "status": "success",
+      "fit_rms_px": 1.473935842514038,
+      "orientation": "ambiguous_modulo_60_degrees"
+    },
+    {
+      "name": "board_no_number/3.jpeg",
+      "status": "failed",
+      "reason": "Sea-frame corner is clipped; use reference registration or manual calibration."
+    },
+    {
+      "name": "board_no_number/4.jpeg",
+      "status": "failed",
+      "reason": "Sea-frame corner is clipped; use reference registration or manual calibration."
+    },
+    {
+      "name": "board_no_number/5.jpeg",
+      "status": "success",
+      "fit_rms_px": 2.9807755947113037,
+      "orientation": "ambiguous_modulo_60_degrees"
+    },
+    {
+      "name": "board_no_number/6.jpeg",
+      "status": "failed",
+      "reason": "Irregular frame: six-corner fit residual 20.8 px exceeds 12 px."
+    },
+    {
+      "name": "board_no_number/7.jpeg",
+      "status": "failed",
+      "reason": "Sea-frame corner is clipped; use reference registration or manual calibration."
+    },
+    {
+      "name": "board_no_number/8.jpeg",
+      "status": "success",
+      "fit_rms_px": 0.41801583766937256,
+      "orientation": "ambiguous_modulo_60_degrees"
+    },
+    {
+      "name": "with_number/number1.jpeg",
+      "status": "success",
+      "fit_rms_px": 1.302925944328308,
+      "orientation": "ambiguous_modulo_60_degrees"
+    }
+  ],
+  "manual_cases": [],
+  "manual_note": "Manual point selection and synthetic homography tests implemented; no human-picked real-image correspondences supplied."
+}
